@@ -1,0 +1,6 @@
+@DockManeger.API_HostAddress = http://localhost:5299
+
+GET {{DockManeger.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
