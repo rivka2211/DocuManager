@@ -1,43 +1,69 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using DocuManager.Core.DTOs;
+using DocuManager.Service.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DocuManager.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FilesController : ControllerBase
+    public class FileController : ControllerBase
     {
-        // GET: api/<FilesController>
+        private readonly IFileService _fileService;
+
+        public FileController(IFileService fileService)
+        {
+            _fileService = fileService;
+        }
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> GetAllFiles()
         {
-            return new string[] { "value1", "value2" };
+            var files = await _fileService.GetAllFilesAsync();
+            return Ok(files);
         }
 
-        // GET api/<FilesController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> GetFileById(int id)
         {
-            return "value";
+            var file = await _fileService.GetFileByIdAsync(id);
+            if (file == null) return NotFound();
+            return Ok(file);
         }
 
-        // POST api/<FilesController>
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetFilesByUserId(int userId)
+        {
+            var files = await _fileService.GetFilesByUserIdAsync(userId);
+            return Ok(files);
+        }
+
+        [HttpGet("category/{categoryId}")]
+        public async Task<IActionResult> GetFilesByCategoryId(int categoryId)
+        {
+            var files = await _fileService.GetFilesByCategoryIdAsync(categoryId);
+            return Ok(files);
+        }
+
+        [HttpPost("tags")]
+        public async Task<IActionResult> GetFilesByTags([FromBody] List<int> tagIds)
+        {
+            var files = await _fileService.GetFilesByTagsAsync(tagIds);
+            return Ok(files);
+        }
+
         [HttpPost]
-        public void Post([FromBody]string value)
+        public async Task<IActionResult> AddFile([FromBody] FileDTO fileDTO)
         {
+            var newFile = await _fileService.AddFileAsync(fileDTO);
+            return CreatedAtAction(nameof(GetFileById), new { id = newFile.Id }, newFile);
         }
 
-        // PUT api/<FilesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/<FilesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> DeleteFile(int id)
         {
+            var result = await _fileService.DeleteFileAsync(id);
+            if (!result) return NotFound();
+            return NoContent();
         }
     }
 }
