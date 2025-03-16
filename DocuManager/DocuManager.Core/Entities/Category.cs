@@ -8,10 +8,14 @@ namespace DocuManager.Core.Entities
 {
     public class Category
     {
-        public int CategoryId{ get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
 
-        public string CategoryName{ get; set; }
+        // קשר One-to-Many - קטגוריה מכילה הרבה קבצים
+        public List<File> Files { get; set; }
 
-        public List<File> CategoryFiles { get; set; }
+        // קשר Many-to-Many - קטגוריה יכולה להכיל קבצים רבים ולהיות תגית לקבצים רבים
+        public List<CategoryFile> CategoryFiles { get; set; }
     }
+
 }

@@ -8,7 +8,7 @@ namespace DocuManager.Core.DTOs
 {
     public class CategoryDTO
     {
-        public int CategoryId { get; set; }
-        public string CategoryName { get; set; }
+        //public int Id { get; set; }
+        public string Name { get; set; }
     }
 }
