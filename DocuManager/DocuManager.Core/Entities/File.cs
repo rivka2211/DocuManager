@@ -18,23 +18,22 @@ namespace DocuManager.Core.Entities
 
         public int UserId { get; set; }
 
+        // קשר One-to-Many - כל קובץ שייך לקטגוריה אחת
+        public int CategoryId { get; set; }
+
         public Category Category { get; set; }
 
-        public List<Category> Tags { get; set; }
+        //public List<Category> Tags { get; set; }
+
+        // קשר Many-to-Many - (קובץ יכול להיות משויך למספר קטגוריות (תגיות
+        public List<CategoryFile> CategoryFiles { get; set; }
+
 
         public File()
         {
-            
+
         }
 
-        public File(string fileName, string fileUrl, DateTime uploadTime, int userId, Category category, List<Category> tags)
-        {
-            FileName = fileName;
-            FileUrl = fileUrl;
-            UploadTime = uploadTime;
-            UserId = userId;
-            Category = category;
-            Tags = tags;
-        }
+
     }
 }

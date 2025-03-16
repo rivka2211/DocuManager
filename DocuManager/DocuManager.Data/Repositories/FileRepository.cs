@@ -22,14 +22,16 @@ namespace DocuManager.Data.Repositories
         public async Task<List<File>> GetAllFilesAsync()
         {
             return await _context.Files.Include(f => f.Category)
-                                       .Include(f => f.Tags)
+                                       .Include(f => f.CategoryFiles)
+                                       .ThenInclude(cf => cf.Category)
                                        .ToListAsync();
         }
 
         public async Task<File> GetFileByIdAsync(int id)
         {
             return await _context.Files.Include(f => f.Category)
-                                       .Include(f => f.Tags)
+                                       .Include(f => f.CategoryFiles)
+                                       .ThenInclude(cf => cf.Category)
                                        .FirstOrDefaultAsync(f => f.Id == id);
         }
 
@@ -37,24 +39,28 @@ namespace DocuManager.Data.Repositories
         {
             return await _context.Files.Where(f => f.UserId == userId)
                                        .Include(f => f.Category)
-                                       .Include(f => f.Tags)
+                                       .Include(f => f.CategoryFiles)
+                                       .ThenInclude(cf => cf.Category)
                                        .ToListAsync();
         }
 
         public async Task<List<File>> GetFilesByCategoryIdAsync(int categoryId)
         {
-            return await _context.Files.Where(f => f.Category.CategoryId == categoryId)
-                                       .Include(f => f.Category)
-                                       .Include(f => f.Tags)
-                                       .ToListAsync();
+            return await _context.Files
+                .Where(f => f.CategoryId == categoryId)
+                .Include(f => f.Category)
+                .Include(f => f.CategoryFiles)
+                .ThenInclude(cf => cf.Category)
+                .ToListAsync();
         }
 
         public async Task<List<File>> GetFilesByTagsAsync(List<int> tagIds)
         {
-            return await _context.Files.Where(f => f.Tags.Any(tag => tagIds.Contains(tag.CategoryId)))
-                                       .Include(f => f.Category)
-                                       .Include(f => f.Tags)
-                                       .ToListAsync();
+            return await _context.Files
+                .Where(f => f.CategoryFiles.Any(cf => tagIds.Contains(cf.CategoryId)))
+                .Include(f => f.CategoryFiles)
+                .ThenInclude(cf => cf.Category)
+                .ToListAsync();
         }
 
         public async Task<File> AddFileAsync(File file)
@@ -66,9 +72,10 @@ namespace DocuManager.Data.Repositories
 
         public async Task<bool> DeleteFileAsync(int id)
         {
-            var file = await _context.Files.FindAsync(id);
+            var file = await _context.Files.Include(f => f.CategoryFiles).FirstOrDefaultAsync(f => f.Id == id);
             if (file == null) return false;
 
+            _context.CategoryFiles.RemoveRange(file.CategoryFiles); // מחיקת הקשרים לטאגים
             _context.Files.Remove(file);
             await SaveChangesAsync();
             return true;
@@ -80,4 +87,3 @@ namespace DocuManager.Data.Repositories
         }
     }
 }
-

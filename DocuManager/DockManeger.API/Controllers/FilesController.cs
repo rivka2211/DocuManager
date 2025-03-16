@@ -1,4 +1,5 @@
-﻿using DocuManager.Core.DTOs;
+﻿using DocuManager.API.Models;
+using DocuManager.Core.DTOs;
 using DocuManager.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -52,8 +53,9 @@ namespace DocuManager.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddFile([FromBody] FileDTO fileDTO)
+        public async Task<IActionResult> AddFile([FromBody] FilePostModel filePost)
         {
+            var fileDTO = new FileDTO() {FileName=filePost.FileName,FileUrl=filePost.FileUrl,UserId=filePost.UserId };
             var newFile = await _fileService.AddFileAsync(fileDTO);
             return CreatedAtAction(nameof(GetFileById), new { id = newFile.Id }, newFile);
         }
