@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocuManager.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace DocuManager.Core.DTOs
         public DateTime UploadTime { get; set; }
         public int UserId { get; set; }
         public CategoryDTO Category { get; set; }
-        public List<CategoryDTO> Tags { get; set; }
+        public List<CategoryFile> CategoryFiles { get; set; }
     }
     public class FileCreateDTO
     {
