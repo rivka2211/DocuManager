@@ -67,6 +67,11 @@ namespace DocuManager.Service
         {
             await _userRepository.DeleteFileFromUserAsync(userId, fileId);
         }
+
+        public Task UpdateFileNameAsync(int userId, int fileId, string name)
+        {
+            await _userRepository.UpdateFileNameAsync(userId, fileId,name);
+        }
     }
 }
 
