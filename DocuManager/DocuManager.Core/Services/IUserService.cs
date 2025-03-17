@@ -18,6 +18,7 @@ namespace DocuManager.Core.Interfaces
         Task UpdateUserRoleAsync(int userId, string role);
         Task AddFileToUserAsync(int userId, File file);
         Task DeleteFileFromUserAsync(int userId, int fileId);
+        Task UpdateFileNameAsync(int id, int fileId, string name);
     }
 }
 

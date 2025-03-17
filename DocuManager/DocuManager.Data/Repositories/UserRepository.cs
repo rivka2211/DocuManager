@@ -7,6 +7,7 @@ using DocuManager.Core.Interfaces;
 using DocuManager.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using File = DocuManager.Core.Entities.File;
+using System.Data;
 
 namespace DocuManager.Data.Repositories
 {
@@ -80,6 +81,20 @@ namespace DocuManager.Data.Repositories
                 if (file != null)
                 {
                     user.Files.Remove(file);
+                    await _context.SaveChangesAsync();
+                }
+            }
+        }
+
+        public async Task UpdateFileNameAsync(int userId, int fileId, string name)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                var file = user.Files.FirstOrDefault(f => f.Id == fileId);
+                if (file != null)
+                {
+                    file.FileName = name;
                     await _context.SaveChangesAsync();
                 }
             }

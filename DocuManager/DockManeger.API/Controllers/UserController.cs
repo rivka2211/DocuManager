@@ -17,13 +17,16 @@ namespace DocuManager.WebAPI.Controllers
         {
             _userService = userService;
         }
+        //auth function
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers()
+        [HttpPost]//register
+        public async Task<IActionResult> AddUser(UserUpdateDto UserDTO)
         {
-            var users = await _userService.GetAllUsersAsync();
-            return Ok(users);
+            await _userService.AddUserAsync(UserDTO);
+            return CreatedAtAction(nameof(GetUserById), new { id = UserDTO }, UserDTO);
         }
+
+        //user functions
 
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDTO>> GetUserById(int id)
@@ -33,18 +36,20 @@ namespace DocuManager.WebAPI.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddUser(UserUpdateDto UserDTO)
-        {
-            await _userService.AddUserAsync(UserDTO);
-            return CreatedAtAction(nameof(GetUserById), new { id = UserDTO }, UserDTO);
-        }
-
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UserUpdateDto UserDTO)
         {
             await _userService.UpdateUserAsync(id, UserDTO);
             return NoContent();
+        }
+
+        //admin functions
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers()
+        {
+            var users = await _userService.GetAllUsersAsync();
+            return Ok(users);
         }
 
         [HttpDelete("{id}")]
@@ -61,6 +66,8 @@ namespace DocuManager.WebAPI.Controllers
             return NoContent();
         }
 
+        //user-files
+
         [HttpPost("{id}/files")]
         public async Task<IActionResult> AddFileToUser(int id, File file)
         {
@@ -72,6 +79,13 @@ namespace DocuManager.WebAPI.Controllers
         public async Task<IActionResult> DeleteFileFromUser(int id, int fileId)
         {
             await _userService.DeleteFileFromUserAsync(id, fileId);
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/files/{fileId}")]
+        public async Task<IActionResult> UpdateFileName(int id,int fileId,[FromBody]string name)
+        {
+            await _userService.UpdateFileNameAsync(id,fileId, name);
             return NoContent();
         }
     }
