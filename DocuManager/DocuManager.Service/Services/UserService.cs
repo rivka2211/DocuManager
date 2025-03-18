@@ -68,9 +68,21 @@ namespace DocuManager.Service
             await _userRepository.DeleteFileFromUserAsync(userId, fileId);
         }
 
-        public Task UpdateFileNameAsync(int userId, int fileId, string name)
+        public async Task UpdateFileNameAsync(int userId, int fileId, string name)
         {
-            await _userRepository.UpdateFileNameAsync(userId, fileId,name);
+            await _userRepository.UpdateFileNameAsync(userId, fileId, name);
+        }
+
+        public async Task<UserDTO?> GetUserByNameAsync(string name)
+        {
+            var user = await _userRepository.GetUserByNameAsync(name);
+            return _mapper.Map<UserDTO>(user);
+        }
+
+        public async Task<UserDTO?> ValidateUserAsync(string name, string password)
+        {
+            var user = await _userRepository.ValidateUserAsync(name, password);
+            return _mapper.Map<UserDTO>(user);
         }
     }
 }

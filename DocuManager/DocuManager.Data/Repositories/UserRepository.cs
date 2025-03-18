@@ -99,6 +99,17 @@ namespace DocuManager.Data.Repositories
                 }
             }
         }
+
+        public async Task<User?> GetUserByNameAsync(string name)
+        {
+            return await _context.Users.Include(u => u.Files).FirstOrDefaultAsync(u => u.Name == name);
+        }
+
+        public async Task<User?> ValidateUserAsync(string name, string password)
+        {
+            return await _context.Users.Include(u => u.Files).FirstOrDefaultAsync(u => u.Name == name&&u.Password==password);
+            
+        }
     }
 }
 

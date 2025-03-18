@@ -1,12 +1,14 @@
 ﻿using DocuManager.API.Models;
 using DocuManager.Core.DTOs;
 using DocuManager.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DocuManager.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class FileController : ControllerBase
     {
         private readonly IFileService _fileService;

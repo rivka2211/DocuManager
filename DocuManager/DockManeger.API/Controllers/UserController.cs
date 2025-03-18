@@ -1,6 +1,7 @@
 ﻿using DocuManager.API.Models;
 using DocuManager.Core.DTOs;
 using DocuManager.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using File = DocuManager.Core.Entities.File;
 
@@ -27,15 +28,16 @@ namespace DocuManager.WebAPI.Controllers
         }
 
         //user functions
-
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDTO>> GetUserById(int id)
         {
+           
             var user = await _userService.GetUserByIdAsync(id);
             if (user == null) return NotFound();
             return Ok(user);
         }
-
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UserUpdateDto UserDTO)
         {
@@ -44,21 +46,21 @@ namespace DocuManager.WebAPI.Controllers
         }
 
         //admin functions
-
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers()
         {
             var users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
-
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             await _userService.DeleteUserAsync(id);
             return NoContent();
         }
-
+        [Authorize]
         [HttpPatch("{id}/role")]
         public async Task<IActionResult> UpdateUserRole(int id, [FromBody] string role)
         {
