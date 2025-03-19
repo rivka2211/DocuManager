@@ -19,6 +19,9 @@ namespace DocuManager.Core.Interfaces
         Task AddFileToUserAsync(int userId, File file);
         Task DeleteFileFromUserAsync(int userId, int fileId);
         Task UpdateFileNameAsync(int id, int fileId, string name);
+        Task<UserDTO?> GetUserByNameAsync(string name);
+        Task <UserDTO?> ValidateUserAsync(string name, string password);
+
     }
 }
 
