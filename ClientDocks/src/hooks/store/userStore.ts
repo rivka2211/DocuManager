@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import axios from "axios";
-import { FileDTO, UserDTO, UserUpdateDto, FileCreateDTO, UpdateFileNameDTO } from "../store/types";
+import { FileDTO, UserDTO, UserUpdateDto, FileCreateDTO, UpdateFileNameDTO } from "../types";
 
 const MYAPI="https://localhost:7175/api";
 
