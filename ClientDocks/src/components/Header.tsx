@@ -8,35 +8,35 @@ const categories = [
   { label: "קטגוריה", path: "/category/about" },
   { label: "service", path: "/category/services" },
   { label: "קטגוריה", path: "/category/contact" },
-  { label: "home", path: "/home" },
+  { label: "profile", path: "/profile" },
 ];
 
-// פונקציה שמחזירה את עיצוב ה-SX כולל צבע רקע דינמי
 const getTabStyle = (theme: any, isActive: boolean) => ({
-  backgroundColor: isActive ? theme.palette.secondary.main :theme.palette.primary.main, 
+  backgroundColor: isActive ? theme.palette.secondary.main : theme.palette.primary.main,
   color: "white",
   fontSize: "2rem",
   fontWeight: "bold",
-  border: `3px solid ${theme.palette.secondary.main}`,
-  minHeight: "100px",
+  border: `2px solid ${theme.palette.secondary.main}`,
+  borderTop: "none", // Remove the border top
+  minHeight: "90px",
   flex: 1, // כל טאב תופס מקום שווה
   padding: "12px 0",
   transition: "0.3s",
   "&:hover": {
-  backgroundColor: isActive ? theme.palette.secondary.dark :theme.palette.primary.dark, 
-//   backgroundColor: theme.palette.primary.dark,
+    backgroundColor: isActive ? theme.palette.secondary.dark : theme.palette.primary.dark,
   },
 });
 
 const Header = () => {
   const theme = useTheme();
   const location = useLocation();
+  const tabValue = categories.find(category => category.path === location.pathname)?.path || '/profile';
 
   return (
     <AppBar position="fixed" sx={{ backgroundColor: "transparent", boxShadow: "none", top: 0, width: "100%" }}>
       <Toolbar sx={{ justifyContent: "center", padding: 0 }}>
         <Tabs
-          value={location.pathname}
+          value={tabValue}
           textColor="primary"
         //   indicatorColor="primary"
           sx={{ width: "100%", minHeight: "auto", margin: 0, padding: 0 ,
