@@ -30,7 +30,7 @@ const MainScreen = () => {
     <Box sx={{ p: 4 }}>
       <Typography variant="h4">קטגוריה: {categoryName}</Typography>
       <ul>
-    {files.map((file) => (
+      {files.map((file) => (
         <OneFile key={file.id} {...file} />
       ))}
       </ul>

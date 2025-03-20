@@ -8,7 +8,7 @@ const categories = [
   { label: "קטגוריה", path: "/category/about" },
   { label: "service", path: "/category/services" },
   { label: "קטגוריה", path: "/category/contact" },
-  { label: "home", path: "/category/home" },
+  { label: "home", path: "/home" },
 ];
 
 // פונקציה שמחזירה את עיצוב ה-SX כולל צבע רקע דינמי
