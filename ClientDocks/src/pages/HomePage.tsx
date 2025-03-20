@@ -1,14 +1,12 @@
-import DashboardLayoutBasic from "../components/Header"
-import UserFiles from "./UserFiles"
+import { Box } from "@mui/material"
+import OneFile from "../components/OneFile"
+
 const HomePage = () => {
     return (
-        // <DashboardLayoutBasic />
-        // <div className="grid_img">
-        //     <h1>home_page</h1>
-        //     {/* <UserProfile /> */}
-        //     {/* <HomePageImages /> */}
-        // </div>
-    <UserFiles />
+        <div>
+            <h1>Home Page</h1>
+            <p>Home page content goes here</p>
+        </div>
     )
 }
 export default HomePage

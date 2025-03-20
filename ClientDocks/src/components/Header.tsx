@@ -1,110 +1,62 @@
-import { extendTheme } from '@mui/material/styles';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import DescriptionIcon from '@mui/icons-material/Description';
-import LayersIcon from '@mui/icons-material/Layers';
-import { AppProvider, Navigation } from '@toolpad/core/AppProvider';
-import { DashboardLayout } from '@toolpad/core/DashboardLayout';
-import { PageContainer } from '@toolpad/core/PageContainer';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React from "react";
+import { AppBar, Toolbar, Tabs, Tab } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import { Link, useLocation } from "react-router-dom";
 
-
-const myCategories = ["חשמל", "מים", "גז", "אינטרנט", "טלפון", "ארנונה", "כללי"];
-const myIcons = [<DashboardIcon />, <ShoppingCartIcon />, <BarChartIcon />, <DescriptionIcon />, <LayersIcon />];
-
-const MYNAVIGATION: Navigation = myCategories.map((category, index) => {
-    return { segmant: category, title: category, icon: myIcons[index] };
-});
-const NAVIGATION: Navigation = [
-    {
-        kind: 'header',
-        title: 'Main items',
-    },
-    {
-        segment: 'dashboard',
-        title: myCategories[0],
-        icon: <DashboardIcon />,
-    },
-    {
-        segment: 'orders',
-        title: 'Orders',
-        icon: <ShoppingCartIcon />,
-    },
-    {
-        kind: 'divider',
-    },
-    {
-        kind: 'header',
-        title: 'Analytics',
-    },
-    {
-        segment: 'reports',
-        title: 'Reports',
-        icon: <BarChartIcon />,
-        children: [
-            {
-                segment: 'sales',
-                title: 'Sales',
-                icon: <DescriptionIcon />,
-            },
-            {
-                segment: 'traffic',
-                title: 'Traffic',
-                icon: <DescriptionIcon />,
-            },
-        ],
-    },
-    {
-        segment: 'integrations',
-        title: 'Integrations',
-        icon: <LayersIcon />,
-    },
+const categories = [
+//   { label: "קטגוריה", path: "/category/home" },
+  { label: "קטגוריה", path: "/category/about" },
+  { label: "service", path: "/category/services" },
+  { label: "קטגוריה", path: "/category/contact" },
+  { label: "home", path: "/home" },
 ];
 
-const demoTheme = extendTheme({
-    colorSchemes: { light: true, dark: true },
-    colorSchemeSelector: 'class',
-    breakpoints: {
-        values: {
-            xs: 0,
-            sm: 600,
-            md: 600,
-            lg: 1200,
-            xl: 1536,
-        },
-    },
+// פונקציה שמחזירה את עיצוב ה-SX כולל צבע רקע דינמי
+const getTabStyle = (theme: any, isActive: boolean) => ({
+  backgroundColor: isActive ? theme.palette.secondary.main :theme.palette.primary.main, 
+  color: "white",
+  fontSize: "2rem",
+  fontWeight: "bold",
+  border: `3px solid ${theme.palette.secondary.main}`,
+  minHeight: "100px",
+  flex: 1, // כל טאב תופס מקום שווה
+  padding: "12px 0",
+  transition: "0.3s",
+  "&:hover": {
+  backgroundColor: isActive ? theme.palette.secondary.dark :theme.palette.primary.dark, 
+//   backgroundColor: theme.palette.primary.dark,
+  },
 });
 
+const Header = () => {
+  const theme = useTheme();
+  const location = useLocation();
 
-function useDemoRouter() {
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    const router = {
-        pathname: location.pathname,
-        searchParams: new URLSearchParams(location.search),
-        navigate: (path: string | URL) => navigate(path),
-    };
-
-    return router;
-}
-
-export default function DashboardLayoutBasic(props: any) {
-
-    const router = useDemoRouter();
-
-    return (
-        <AppProvider
-            navigation={MYNAVIGATION}
-            router={router}
-            theme={demoTheme}
+  return (
+    <AppBar position="fixed" sx={{ backgroundColor: "transparent", boxShadow: "none", top: 0, width: "100%" }}>
+      <Toolbar sx={{ justifyContent: "center", padding: 0 }}>
+        <Tabs
+          value={location.pathname}
+          textColor="primary"
+        //   indicatorColor="primary"
+          sx={{ width: "100%", minHeight: "auto", margin: 0, padding: 0 ,
+            "& .MuiTabs-indicator": { display: "none" }, 
+          }}
         >
-            <DashboardLayout>
-                <PageContainer>
-                    <div>my dashboard</div>
-                </PageContainer>
-            </DashboardLayout>
-        </AppProvider>
-    );
-}
+          {categories.map((category) => (
+            <Tab
+              key={category.path}
+              label={category.label}
+              value={category.path}
+              component={Link}
+              to={category.path}
+              sx={getTabStyle(theme, location.pathname === category.path)}
+            />
+          ))}
+        </Tabs>
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+export default Header;
