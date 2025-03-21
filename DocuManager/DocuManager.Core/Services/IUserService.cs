@@ -12,8 +12,8 @@ namespace DocuManager.Core.Interfaces
     {
         Task<IEnumerable<UserDTO>> GetAllUsersAsync();
         Task<UserDTO> GetUserByIdAsync(int id);
-        Task AddUserAsync(UserUpdateDto userDto);
-        Task UpdateUserAsync(int id, UserUpdateDto userDto);
+        Task AddUserAsync(UserDTO userDto);
+        Task UpdateUserAsync(int id, UserDTO userDto);
         Task DeleteUserAsync(int id);
         Task UpdateUserRoleAsync(int userId, string role);
         Task AddFileToUserAsync(int userId, File file);

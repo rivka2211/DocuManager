@@ -36,13 +36,13 @@ namespace DocuManager.Service
             return _mapper.Map<UserDTO>(user);
         }
 
-        public async Task AddUserAsync(UserUpdateDto UserDTO)
+        public async Task AddUserAsync(UserDto UserDTO)
         {
             var user = _mapper.Map<User>(UserDTO);
             await _userRepository.AddUserAsync(user);
         }
 
-        public async Task UpdateUserAsync(int id, UserUpdateDto UserDTO)
+        public async Task UpdateUserAsync(int id, UserDto UserDTO)
         {
             var user = _mapper.Map<User>(UserDTO);
             user.Id = id;

@@ -21,7 +21,7 @@ namespace DocuManager.WebAPI.Controllers
         //auth function
 
         [HttpPost]//register
-        public async Task<IActionResult> AddUser(UserUpdateDto UserDTO)
+        public async Task<IActionResult> AddUser(UserDto UserDTO)
         {
             await _userService.AddUserAsync(UserDTO);
             return CreatedAtAction(nameof(GetUserById), new { id = UserDTO }, UserDTO);
@@ -39,7 +39,7 @@ namespace DocuManager.WebAPI.Controllers
         }
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, UserUpdateDto UserDTO)
+        public async Task<IActionResult> UpdateUser(int id, UserDto UserDTO)
         {
             await _userService.UpdateUserAsync(id, UserDTO);
             return NoContent();
