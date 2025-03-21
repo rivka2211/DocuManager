@@ -7,7 +7,7 @@ const theme = createTheme({
             // main: "#0A3D91"
         },
         secondary: {
-            main: "#FFCD05", // ורוד
+            main: "#FFCD05", // צהוב
         },
         background: {
             default: "#f5f5f5", // רקע אפור בהיר
