@@ -47,12 +47,6 @@ namespace DocuManager.Service.Services
             return _mapper.Map<List<FileDTO>>(files);
         }
 
-        public async Task<List<FileDTO>> GetFilesByTagsAsync(List<int> tagIds)
-        {
-            var files = await _fileRepository.GetFilesByTagsAsync(tagIds);
-            return _mapper.Map<List<FileDTO>>(files);
-        }
-
         public async Task<FileDTO> AddFileAsync(FileDTO fileDTO)
         {
             var file = _mapper.Map<File>(fileDTO);
@@ -65,6 +59,11 @@ namespace DocuManager.Service.Services
         public async Task<bool> DeleteFileAsync(int id)
         {
             return await _fileRepository.DeleteFileAsync(id);
+        }
+
+        public async Task DeleteUserFilesAsync(int id)
+        {
+             await _fileRepository.DeleteUserFilesAsync(id);
         }
     }
 }

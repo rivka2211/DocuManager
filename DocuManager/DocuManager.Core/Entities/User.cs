@@ -18,23 +18,27 @@ namespace DocuManager.Core.Entities
 
         public string Role { get; set; }
 
-        public List<File> Files { get;  set; }
-
         public List<Category> Categories { get; set; }
+
+        public List<ActivityHistory> History { get; set; }
+
+        public bool IsDeleted { get; set; }
 
         public User()
         {
-            
+
         }
 
-        public User(int id,string name, string password, string email)
+        public User( string name, string password, string email)
         {
-            Id = id;
             Name = name;
             Password = password;
             Email = email;
             Role = "user";
-            Files = new List<File>();
+            //Files = new List<File>();
+            Categories = new List<Category>();
+            History = new List<ActivityHistory>();
         }
     }
+   
 }

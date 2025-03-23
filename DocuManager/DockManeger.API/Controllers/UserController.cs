@@ -1,5 +1,4 @@
-﻿using DocuManager.API.Models;
-using DocuManager.Core.DTOs;
+﻿using DocuManager.Core.DTOs;
 using DocuManager.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +20,7 @@ namespace DocuManager.WebAPI.Controllers
         //auth function
 
         [HttpPost]//register
-        public async Task<IActionResult> AddUser(UserDto UserDTO)
+        public async Task<IActionResult> AddUser(UserDTO UserDTO)
         {
             await _userService.AddUserAsync(UserDTO);
             return CreatedAtAction(nameof(GetUserById), new { id = UserDTO }, UserDTO);
@@ -39,7 +38,7 @@ namespace DocuManager.WebAPI.Controllers
         }
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, UserDto UserDTO)
+        public async Task<IActionResult> UpdateUser(int id, UserUpdateDTO UserDTO)
         {
             await _userService.UpdateUserAsync(id, UserDTO);
             return NoContent();
@@ -68,28 +67,7 @@ namespace DocuManager.WebAPI.Controllers
             return NoContent();
         }
 
-        //user-files
 
-        [HttpPost("{id}/files")]
-        public async Task<IActionResult> AddFileToUser(int id, File file)
-        {
-            await _userService.AddFileToUserAsync(id, file);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}/files/{fileId}")]
-        public async Task<IActionResult> DeleteFileFromUser(int id, int fileId)
-        {
-            await _userService.DeleteFileFromUserAsync(id, fileId);
-            return NoContent();
-        }
-
-        [HttpPatch("{id}/files/{fileId}")]
-        public async Task<IActionResult> UpdateFileName(int id,int fileId,[FromBody]string name)
-        {
-            await _userService.UpdateFileNameAsync(id,fileId, name);
-            return NoContent();
-        }
     }
 
 }

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using DocuManager.Core.DTOs;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,24 +18,44 @@ namespace DocuManager.Core.Entities
 
         public DateTime UploadTime { get; set; }
 
-        public int UserId { get; set; }
+        public  int OwnerId { get; set; }
 
-        // קשר One-to-Many - כל קובץ שייך לקטגוריה אחת
-        public int CategoryId { get; set; }
+        public string Content { get; set; } = "";
 
+        [ForeignKey("CategoryId")]
         public Category Category { get; set; }
 
-        //public List<Category> Tags { get; set; }
+        public int CategoryId { get; set; }
 
-        // קשר Many-to-Many - (קובץ יכול להיות משויך למספר קטגוריות (תגיות
-        public List<CategoryFile> CategoryFiles { get; set; }
+        public bool IsDeleted { get; set; }
 
+        //public virtual Category Category { get; set; }
+        ////public List<Category> Tags { get; set; }
+        //// קשר Many-to-Many - (קובץ יכול להיות משויך למספר קטגוריות (תגיות
+        //public List<CategoryFile> CategoryFiles { get; set; }
 
         public File()
         {
 
         }
 
+        public File(string fileName, string fileUrl, int userId, int categoryId)
+        {
+            FileName = fileName;
+            FileUrl = fileUrl;
+            OwnerId = userId;
+            UploadTime = DateTime.UtcNow;
+            CategoryId = categoryId;
+        }
 
+        public File(FileCreateDTO dto)
+        {
+            FileName = dto.FileName;
+            FileUrl = dto.FileUrl;
+            OwnerId = dto.OwnerId;
+            CategoryId = dto.CategoryId;
+            IsDeleted = false; // תמיד שלילי ביצירה
+            UploadTime = DateTime.UtcNow; // יכול להיות שימושי להגדיר מיידית
+        }
     }
 }

@@ -1,11 +1,13 @@
 ﻿using DocuManager.Core.DTOs;
 using DocuManager.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DocuManager.API.Controllers
 {
+    [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/activity")]
     public class ActivityHistoryController : ControllerBase
     {
         private readonly IActivityHistoryService _historyService;

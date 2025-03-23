@@ -16,11 +16,14 @@ namespace DocuManager.Service
         {
             CreateMap<User, UserDTO>().ReverseMap();
             CreateMap<User, UserUpdateDTO>().ReverseMap();
+            CreateMap<UserDTO, UserUpdateDTO>().ReverseMap();
 
             CreateMap<File, FileDTO>().ReverseMap();
             CreateMap<File, FileCreateDTO>().ReverseMap();
 
             CreateMap<Category, CategoryDTO>().ReverseMap();
+
+            CreateMap<ActivityHistory, ActivityHisotiryDTO>().ReverseMap();
         }
     }
 }

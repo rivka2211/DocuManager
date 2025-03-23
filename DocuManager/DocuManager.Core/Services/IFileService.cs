@@ -10,12 +10,14 @@ namespace DocuManager.Service.Interfaces
     public interface IFileService
     {
         Task<List<FileDTO>> GetAllFilesAsync();
+        Task<List<FileDTO>> GetAllActivityFilesAsync();
         Task<FileDTO> GetFileByIdAsync(int id);
         Task<List<FileDTO>> GetFilesByUserIdAsync(int userId);
-        Task<List<FileDTO>> GetFilesByCategoryIdAsync(int categoryId);
-        Task<List<FileDTO>> GetFilesByTagsAsync(List<int> tagIds);
+        Task<List<FileDTO>> GetFilesByCategoryIdAsync(int userId,int categoryId);
         Task<FileDTO> AddFileAsync(FileDTO fileDTO);
         Task<bool> DeleteFileAsync(int id);
+        Task<bool> SoftDeleteFileAsync(int id);
+        Task DeleteUserFilesAsync(int id);
     }
 }
 

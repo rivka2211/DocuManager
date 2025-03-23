@@ -1,3 +1,4 @@
+using DocuManager.API.Middlewares;
 using DocuManager.Core.Interfaces;
 using DocuManager.Core.Repositories;
 using DocuManager.Core.Services;
@@ -78,6 +79,9 @@ builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IActivityHistoryRepository, ActivityHistoryRepository>();
+builder.Services.AddScoped<IActivityHistoryService, ActivityHistoryService>();
+
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -97,10 +101,12 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
+app.UseCors("MyPolicy");
+
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseCors("MyPolicy");
+app.UseMiddleware<JwtMiddleware>();
 
 app.Run();

@@ -1,5 +1,5 @@
-﻿using DocuManager.API.Models;
-using DocuManager.Core.DTOs;
+﻿using DocuManager.Core.DTOs;
+using DocuManager.Core.Interfaces;
 using DocuManager.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +13,7 @@ namespace DocuManager.API.Controllers
     {
         private readonly IFileService _fileService;
 
-        public FileController(IFileService fileService)
+        public FileController(IFileService fileService,IUserService userService)
         {
             _fileService = fileService;
         }
@@ -33,9 +33,10 @@ namespace DocuManager.API.Controllers
             return Ok(file);
         }
 
-        [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetFilesByUserId(int userId)
+        [HttpGet("user")]
+        public async Task<IActionResult> GetFilesByUserId()
         {
+            int userId = int.Parse(HttpContext.Items["UserId"]?.ToString());
             var files = await _fileService.GetFilesByUserIdAsync(userId);
             return Ok(files);
         }
@@ -43,21 +44,16 @@ namespace DocuManager.API.Controllers
         [HttpGet("category/{categoryId}")]
         public async Task<IActionResult> GetFilesByCategoryId(int categoryId)
         {
-            var files = await _fileService.GetFilesByCategoryIdAsync(categoryId);
-            return Ok(files);
-        }
-
-        [HttpPost("tags")]
-        public async Task<IActionResult> GetFilesByTags([FromBody] List<int> tagIds)
-        {
-            var files = await _fileService.GetFilesByTagsAsync(tagIds);
+            var userId = int.Parse(HttpContext.Items["UserId"]?.ToString());
+            var files = await _fileService.GetFilesByCategoryIdAsync(userId,categoryId);
             return Ok(files);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddFile([FromBody] FilePostModel filePost)
+        public async Task<IActionResult> AddFile([FromBody] FileCreateDTO file)
         {
-            var fileDTO = new FileDTO() {FileName=filePost.FileName,FileUrl=filePost.FileUrl,UserId=filePost.UserId };
+            var userId= int.Parse(HttpContext.Items["UserId"]?.ToString());
+            var fileDTO = new FileDTO() {FileName= file.FileName,FileUrl= file.FileUrl, OwnerId = userId, CategoryId= file.CategoryId };
             var newFile = await _fileService.AddFileAsync(fileDTO);
             return CreatedAtAction(nameof(GetFileById), new { id = newFile.Id }, newFile);
         }

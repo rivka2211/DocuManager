@@ -11,14 +11,13 @@ namespace DocuManager.Core.Interfaces
     public interface IUserRepository
     {
         Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<IEnumerable<User>> GetActiveUsersAsync();
         Task<User> GetUserByIdAsync(int id);
         Task AddUserAsync(User user);
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(int id);
+        Task SoftDeleteUserAsync(int id);
         Task UpdateUserRoleAsync(int userId, string role);
-        Task AddFileToUserAsync(int userId, File file);
-        Task DeleteFileFromUserAsync(int userId, int fileId);
-        Task UpdateFileNameAsync(int userId, int fileId, string name);
         Task<User?> GetUserByNameAsync(string name);
         Task<User?> ValidateUserAsync(string name, string password);
     }

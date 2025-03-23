@@ -20,12 +20,13 @@ namespace DocuManager.Data.Repositories
 
         public async Task<List<Category>> GetAllCategoriesAsync()
         {
-            return await _context.Categories.Include(c => c.CategoryFiles).ToListAsync();
+            return await _context.Categories.Include(c => c.Files).ToListAsync();
         }
 
         public async Task<Category> GetCategoryByIdAsync(int id)
         {
-            return await _context.Categories.Include(c => c.CategoryFiles).FirstOrDefaultAsync(c => c.Id == id);
+            var category= await _context.Categories.Include(c => c.Files).FirstOrDefaultAsync(c => c.Id == id);
+            return category;
         }
 
         public async Task<Category> AddCategoryAsync(Category category)

@@ -14,9 +14,9 @@ namespace DocuManager.Data.Repositories.Interfaces
         Task<File> GetFileByIdAsync(int id);
         Task<List<File>> GetFilesByUserIdAsync(int userId);
         Task<List<File>> GetFilesByCategoryIdAsync(int categoryId);
-        Task<List<File>> GetFilesByTagsAsync(List<int> tagIds);
         Task<File> AddFileAsync(File file);
         Task<bool> DeleteFileAsync(int id);
+        Task<bool> DeleteUserFilesAsync(int id);
         Task SaveChangesAsync();
     }
 }

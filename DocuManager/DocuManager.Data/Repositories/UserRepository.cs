@@ -22,12 +22,20 @@ namespace DocuManager.Data.Repositories
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
-            return await _context.Users.Include(u => u.Files).ToListAsync();
+            return await _context.Users.Include(u => u.Categories).AsNoTracking().ToListAsync();
+        }
+        public async Task<IEnumerable<User>> GetActiveUsersAsync()
+        {
+            return await _context.Users
+                .Where(u => !u.IsDeleted)
+                .Include(u => u.Categories)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<User> GetUserByIdAsync(int id)
         {
-            return await _context.Users.Include(u => u.Files).FirstOrDefaultAsync(u => u.Id == id);
+            return await _context.Users.Include(u => u.Categories).AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task AddUserAsync(User user)
@@ -40,6 +48,15 @@ namespace DocuManager.Data.Repositories
         {
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
+        }
+        public async Task SoftDeleteUserAsync(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user != null)
+            {
+                user.IsDeleted = true;
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task DeleteUserAsync(int id)
@@ -62,53 +79,14 @@ namespace DocuManager.Data.Repositories
             }
         }
 
-        public async Task AddFileToUserAsync(int userId, File file)
-        {
-            var user = await _context.Users.Include(u => u.Files).FirstOrDefaultAsync(u => u.Id == userId);
-            if (user != null)
-            {
-                user.Files.Add(file);
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        public async Task DeleteFileFromUserAsync(int userId, int fileId)
-        {
-            var user = await _context.Users.Include(u => u.Files).FirstOrDefaultAsync(u => u.Id == userId);
-            if (user != null)
-            {
-                var file = user.Files.FirstOrDefault(f => f.Id == fileId);
-                if (file != null)
-                {
-                    user.Files.Remove(file);
-                    await _context.SaveChangesAsync();
-                }
-            }
-        }
-
-        public async Task UpdateFileNameAsync(int userId, int fileId, string name)
-        {
-            var user = await _context.Users.FindAsync(userId);
-            if (user != null)
-            {
-                var file = user.Files.FirstOrDefault(f => f.Id == fileId);
-                if (file != null)
-                {
-                    file.FileName = name;
-                    await _context.SaveChangesAsync();
-                }
-            }
-        }
-
         public async Task<User?> GetUserByNameAsync(string name)
         {
-            return await _context.Users.Include(u => u.Files).FirstOrDefaultAsync(u => u.Name == name);
+            return await _context.Users.Include(u => u.Categories).AsNoTracking().FirstOrDefaultAsync(u => u.Name == name);
         }
 
         public async Task<User?> ValidateUserAsync(string name, string password)
         {
-            return await _context.Users.Include(u => u.Files).FirstOrDefaultAsync(u => u.Name == name&&u.Password==password);
-            
+            return await _context.Users.Include(u => u.Categories).AsNoTracking().FirstOrDefaultAsync(u => u.Name == name && u.Password == password);
         }
     }
 }
