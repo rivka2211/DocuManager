@@ -23,7 +23,7 @@
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserUpdateDto userDto)
+        public async Task<IActionResult> Register(UserUpdateDTO userDto)
         {
             UserDTO existingUser = await _userService.GetUserByNameAsync(userDto.Name);
             if (existingUser != null)
@@ -58,9 +58,11 @@
 
             var claims = new[]
             {
-            new Claim(ClaimTypes.Name, user.Name),
-            new Claim(ClaimTypes.Email, user.Email)
-        };
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), 
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role),
+            };
 
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
