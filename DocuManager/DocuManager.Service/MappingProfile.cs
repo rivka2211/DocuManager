@@ -15,10 +15,10 @@ namespace DocuManager.Service
         public MappingProfile()
         {
             CreateMap<User, UserDTO>().ReverseMap();
-            CreateMap<UserDto, User>().ReverseMap();
+            CreateMap<User, UserUpdateDTO>().ReverseMap();
 
-            CreateMap<File, FileDTO>();
-            CreateMap<FileCreateDTO, File>();
+            CreateMap<File, FileDTO>().ReverseMap();
+            CreateMap<File, FileCreateDTO>().ReverseMap();
 
             CreateMap<Category, CategoryDTO>().ReverseMap();
         }
