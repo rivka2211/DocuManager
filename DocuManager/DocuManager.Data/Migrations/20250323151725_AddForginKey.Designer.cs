@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocuManager.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250316132345_CreateBD")]
-    partial class CreateBD
+    [Migration("20250323151725_AddForginKey")]
+    partial class AddForginKey
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,27 @@ namespace DocuManager.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("DocuManager.Core.Entities.ActivityHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ActivityHistories");
+                });
+
             modelBuilder.Entity("DocuManager.Core.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -33,28 +54,21 @@ namespace DocuManager.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("DocuManager.Core.Entities.CategoryFile", b =>
-                {
-                    b.Property<int>("FileId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.HasKey("FileId", "CategoryId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("CategoryFiles");
                 });
 
             modelBuilder.Entity("DocuManager.Core.Entities.File", b =>
@@ -65,8 +79,15 @@ namespace DocuManager.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ActivityHistoryId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FileName")
                         .IsRequired()
@@ -76,17 +97,22 @@ namespace DocuManager.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("UploadTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("ActivityHistoryId");
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Files");
                 });
@@ -102,6 +128,9 @@ namespace DocuManager.Data.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -120,57 +149,59 @@ namespace DocuManager.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("DocuManager.Core.Entities.CategoryFile", b =>
+            modelBuilder.Entity("DocuManager.Core.Entities.ActivityHistory", b =>
                 {
-                    b.HasOne("DocuManager.Core.Entities.Category", "Category")
-                        .WithMany("CategoryFiles")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("DocuManager.Core.Entities.User", "User")
+                        .WithMany("History")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DocuManager.Core.Entities.File", "File")
-                        .WithMany("CategoryFiles")
-                        .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DocuManager.Core.Entities.Category", b =>
+                {
+                    b.HasOne("DocuManager.Core.Entities.User", "User")
+                        .WithMany("Categories")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Category");
-
-                    b.Navigation("File");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DocuManager.Core.Entities.File", b =>
                 {
+                    b.HasOne("DocuManager.Core.Entities.ActivityHistory", null)
+                        .WithMany("Files")
+                        .HasForeignKey("ActivityHistoryId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("DocuManager.Core.Entities.Category", "Category")
                         .WithMany("Files")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DocuManager.Core.Entities.User", null)
-                        .WithMany("Files")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("DocuManager.Core.Entities.ActivityHistory", b =>
+                {
+                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("DocuManager.Core.Entities.Category", b =>
                 {
-                    b.Navigation("CategoryFiles");
-
                     b.Navigation("Files");
-                });
-
-            modelBuilder.Entity("DocuManager.Core.Entities.File", b =>
-                {
-                    b.Navigation("CategoryFiles");
                 });
 
             modelBuilder.Entity("DocuManager.Core.Entities.User", b =>
                 {
-                    b.Navigation("Files");
+                    b.Navigation("Categories");
+
+                    b.Navigation("History");
                 });
 #pragma warning restore 612, 618
         }
