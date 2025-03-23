@@ -1,8 +1,11 @@
 import { makeAutoObservable } from "mobx";
 import axios from "axios";
 import { FileDTO, UserDTO, UserUpdateDto, FileCreateDTO, UpdateFileNameDTO } from "../types";
+import { ApiClient } from "../../api/client";
 
 const MYAPI="https://localhost:7175/api";
+const apiClient=new ApiClient("https://localhost:7175");
+// apiClient.fileGET(1).then(console.log);
 
 export class UserStore {
   user: UserDTO | null = null;
