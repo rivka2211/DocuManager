@@ -17,10 +17,20 @@
 
         public async Task Invoke(HttpContext context)
         {
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var path = context.Request.Path.Value.ToLower();
 
-            if (token != null)
+            // בודק אם הבקשה היא ל-login או register
+            if (!path.Contains("login") && !path.Contains("register"))
             {
+                var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized; // מחזיר 401 Unauthorized
+                    await context.Response.WriteAsync("Unauthorized");
+                    return;
+                }
+
                 var handler = new JwtSecurityTokenHandler();
                 var jwtToken = handler.ReadJwtToken(token);
 
@@ -37,5 +47,4 @@
             await _next(context);
         }
     }
-
 }
