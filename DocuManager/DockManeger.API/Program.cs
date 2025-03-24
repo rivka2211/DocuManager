@@ -97,6 +97,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -105,8 +106,8 @@ app.UseCors("MyPolicy");
 
 app.UseAuthorization();
 
-app.MapControllers();
-
 app.UseMiddleware<JwtMiddleware>();
+
+app.MapControllers();
 
 app.Run();

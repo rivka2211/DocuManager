@@ -23,7 +23,7 @@ namespace DocuManager.API.Controllers
         private bool IsAdmin() => HttpContext.Items["Role"]?.ToString() == "admin";
 
         //admin
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<IActionResult> GetAllFiles()
         {
             if (!IsAdmin())
@@ -114,8 +114,7 @@ namespace DocuManager.API.Controllers
             return BadRequest($"did not sucsses to delete file number {id}");
         }
 
-        //delete user fills
-        [HttpPatch]
+        [HttpPatch("user")]
         public async Task<IActionResult> DeleteUserFiles()
         {
             int num = await _fileService.DeleteUserFilesAsync(UserId());

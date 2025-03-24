@@ -7,6 +7,7 @@ using File = DocuManager.Core.Entities.File;
 
 namespace DocuManager.WebAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
@@ -17,52 +18,53 @@ namespace DocuManager.WebAPI.Controllers
         {
             _userService = userService;
         }
-        //auth function
 
-        [HttpPost]//register
-        public async Task<IActionResult> AddUser(UserDTO UserDTO)
-        {
-            await _userService.AddUserAsync(UserDTO);
-            return CreatedAtAction(nameof(GetUserById), new { id = UserDTO }, UserDTO);
-        }
+        private int UserId() => int.Parse(HttpContext.Items["UserId"]?.ToString());
+
+        private bool IsAdmin() => HttpContext.Items["Role"]?.ToString() == "admin";
 
         //user functions
-        [Authorize]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserDTO>> GetUserById(int id)
+
+        [HttpGet("user")]
+        public async Task<ActionResult<UserDTO>> GetUserById()
         {
-           
-            var user = await _userService.GetUserByIdAsync(id);
+
+            var user = await _userService.GetUserByIdAsync(UserId());
             if (user == null) return NotFound();
             return Ok(user);
         }
-        [Authorize]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, UserUpdateDTO UserDTO)
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser( UserUpdateDTO UserDTO)
         {
-            await _userService.UpdateUserAsync(id, UserDTO);
+            await _userService.UpdateUserAsync(UserId(), UserDTO);
             return NoContent();
         }
 
         //admin functions
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers()
         {
+            if (!IsAdmin())
+                return Forbid();
             var users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
-        [Authorize]
+   
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
+            if (!IsAdmin())
+                return Forbid();
             await _userService.DeleteUserAsync(id);
             return NoContent();
         }
-        [Authorize]
+    
         [HttpPatch("{id}/role")]
         public async Task<IActionResult> UpdateUserRole(int id, [FromBody] string role)
         {
+            if (!IsAdmin())
+                return Forbid();
             await _userService.UpdateUserRoleAsync(id, role);
             return NoContent();
         }
