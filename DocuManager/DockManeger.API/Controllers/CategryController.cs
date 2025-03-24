@@ -17,7 +17,7 @@ namespace DocuManager.API.Controllers
             _categoryService = categoryService;
         }
 
-        private bool IsAdmin() => HttpContext.Items["Role"]?.ToString() == "admin";
+        private bool IsAdmin() => HttpContext.Items["UserRole"]?.ToString() == "admin";
 
         [HttpGet]
         public async Task<ActionResult<List<CategoryDTO>>> GetAll()

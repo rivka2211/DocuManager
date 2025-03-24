@@ -19,7 +19,7 @@ namespace DocuManager.API.Controllers
 
         private int UserId() => int.Parse(HttpContext.Items["UserId"]?.ToString());
 
-        private bool IsAdmin() => HttpContext.Items["Role"]?.ToString() == "admin";
+        private bool IsAdmin() => HttpContext.Items["UserRole"]?.ToString() == "admin";
 
         [HttpGet("user")]
         public async Task<IActionResult> GetUserHistory()
@@ -47,14 +47,14 @@ namespace DocuManager.API.Controllers
         }
 
         [HttpGet("by-date")]
-        public async Task<IActionResult> GetUserHistoryByDate(DateTime? startDate, DateTime? endDate)
+        public async Task<IActionResult> GetUserHistoryByDate([FromQuery]DateTime? startDate, [FromQuery] DateTime? endDate)
         {
             var history = await _historyService.GetUserHistoryByDateAsync(UserId(), startDate, endDate);
             return Ok(history);
         }
 
         [HttpGet("all/by-date")]
-        public async Task<IActionResult> GetAllUsersHistoryByDate(DateTime? startDate, DateTime? endDate)
+        public async Task<IActionResult> GetAllUsersHistoryByDate([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
         {
             if (!IsAdmin())
                 return Forbid();

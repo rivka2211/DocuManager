@@ -21,7 +21,7 @@ namespace DocuManager.WebAPI.Controllers
 
         private int UserId() => int.Parse(HttpContext.Items["UserId"]?.ToString());
 
-        private bool IsAdmin() => HttpContext.Items["Role"]?.ToString() == "admin";
+        private bool IsAdmin() => HttpContext.Items["UserRole"]?.ToString() == "admin";
 
         //user functions
 
