@@ -49,7 +49,15 @@ namespace DocuManager.API.Controllers
         [HttpGet("by-date")]
         public async Task<IActionResult> GetUserHistoryByDate([FromQuery]DateTime? startDate, [FromQuery] DateTime? endDate)
         {
-            var history = await _historyService.GetUserHistoryByDateAsync(UserId(), startDate, endDate);
+            endDate ??= DateTime.UtcNow;
+            startDate ??=endDate.Value.AddMonths(-1);
+
+            if (startDate > endDate)
+            {
+                return BadRequest("תאריך ההתחלה לא יכול להיות אחרי תאריך הסיום");
+            }
+
+            var history = await _historyService.GetUserHistoryByDateAsync(UserId(), startDate.Value, endDate.Value);
             return Ok(history);
         }
 
@@ -58,7 +66,14 @@ namespace DocuManager.API.Controllers
         {
             if (!IsAdmin())
                 return Forbid();
-            var history = await _historyService.GetAllUsersHistoryByDateAsync(startDate, endDate);
+            endDate ??= DateTime.UtcNow;
+            startDate ??= endDate.Value.AddMonths(-1);
+
+            if (startDate > endDate)
+            {
+                return BadRequest("תאריך ההתחלה לא יכול להיות אחרי תאריך הסיום");
+            }
+            var history = await _historyService.GetAllUsersHistoryByDateAsync(startDate.Value, endDate.Value);
             return Ok(history);
         }
 

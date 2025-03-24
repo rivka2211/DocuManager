@@ -56,12 +56,9 @@ namespace DocuManager.Service.Services
             }).ToList();
         }
 
-        public async Task<List<ActivityHisotiryDTO>> GetUserHistoryByDateAsync(int userId, DateTime? startDate, DateTime? endDate)
+        public async Task<List<ActivityHisotiryDTO>> GetUserHistoryByDateAsync(int userId, DateTime startDate, DateTime endDate)
         {
-            startDate ??= DateTime.UtcNow.AddMonths(-1);
-            endDate ??= DateTime.UtcNow;
-
-            var history = await _historyRepository.GetUserHistoryByDateAsync(userId, startDate.Value, endDate.Value);
+            var history = await _historyRepository.GetUserHistoryByDateAsync(userId, startDate, endDate);
             return history.Select(h => new ActivityHisotiryDTO
             {
                 Id = h.Id,
@@ -71,12 +68,9 @@ namespace DocuManager.Service.Services
             }).ToList();
         }
 
-        public async Task<List<ActivityHisotiryDTO>> GetAllUsersHistoryByDateAsync(DateTime? startDate, DateTime? endDate)
+        public async Task<List<ActivityHisotiryDTO>> GetAllUsersHistoryByDateAsync(DateTime startDate, DateTime endDate)
         {
-            startDate ??= DateTime.UtcNow.AddMonths(-1);
-            endDate ??= DateTime.UtcNow;
-
-            var history = await _historyRepository.GetAllUsersHistoryByDateAsync(startDate.Value, endDate.Value);
+            var history = await _historyRepository.GetAllUsersHistoryByDateAsync(startDate, endDate);
             return history.Select(h => new ActivityHisotiryDTO
             {
                 Id = h.Id,
