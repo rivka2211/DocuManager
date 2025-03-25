@@ -1,5 +1,4 @@
-import { Box } from "@mui/material"
-import OneFile from "../components/OneFile"
+
 import UserAccess from "../components/UserAccess"
 
 const HomePage = () => {

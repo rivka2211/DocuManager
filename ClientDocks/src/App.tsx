@@ -1,10 +1,8 @@
 import { BrowserRouter as Router } from 'react-router-dom';
-import HomePage from './pages/HomePage';
 import { Container, CssBaseline, ThemeProvider } from '@mui/material';
 import AppRoutes from './routes';
 import Header from './components/Header';
 import theme from './theme';
-// import { LayoutRouteProps } from 'react-router-dom';
 
 
 const App = () => {

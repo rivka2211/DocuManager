@@ -1,4 +1,4 @@
-import React from "react";
+
 import { useParams } from "react-router-dom";
 import { Typography, Box } from "@mui/material";
 import { FileDTO } from "../hooks/types";
