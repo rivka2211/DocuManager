@@ -86,7 +86,7 @@ builder.Services.AddScoped<IActivityHistoryService, ActivityHistoryService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=DocuManager_db"));
+    options => options.UseSqlServer(builder.Configuration["DBConnectionString"]));
 
 var app = builder.Build();
 
