@@ -23,16 +23,15 @@ namespace DocuManager.Core.Entities
         public string Content { get; set; } = "";
 
         [ForeignKey("CategoryId")]
-        public Category Category { get; set; }
+        public virtual Category Category { get; set; }
 
         public int CategoryId { get; set; }
 
+        public List<ActivityHistory> ActivityHistories { get; set; }
+
+
         public bool IsDeleted { get; set; }
 
-        //public virtual Category Category { get; set; }
-        ////public List<Category> Tags { get; set; }
-        //// קשר Many-to-Many - (קובץ יכול להיות משויך למספר קטגוריות (תגיות
-        //public List<CategoryFile> CategoryFiles { get; set; }
 
         public File()
         {

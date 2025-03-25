@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocuManager.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250325131902_userIdNullAble")]
-    partial class userIdNullAble
+    [Migration("20250325135053_create_the_DB")]
+    partial class create_the_DB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

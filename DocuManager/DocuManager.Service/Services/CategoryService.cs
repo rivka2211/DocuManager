@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using File = DocuManager.Core.Entities.File;
 
 namespace DocuManager.Service.Services
 {
@@ -34,11 +35,11 @@ namespace DocuManager.Service.Services
             return _mapper.Map<CategoryDTO>(category);
         }
 
-        public async Task<CategoryDTO> AddCategoryAsync(CategoryDTO categoryDto)
+        public async Task<CategoryDTO> AddCategoryAsync(int userId,string name)
         {
-            var category = _mapper.Map<Category>(categoryDto);
-            var newCategory = await _categoryRepository.AddCategoryAsync(category);
-            return _mapper.Map<CategoryDTO>(newCategory);
+            Category category = new Category { Name = name, UserId = userId, Files = new List<File>(),IsDeleted=false };
+            category = await _categoryRepository.AddCategoryAsync(category);
+            return _mapper.Map<CategoryDTO>(category);
         }
 
         public async Task<CategoryDTO> UpdateCategoryAsync(CategoryDTO categoryDto)

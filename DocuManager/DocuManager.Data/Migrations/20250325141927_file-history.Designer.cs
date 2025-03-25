@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocuManager.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250325131248_create_the_DB")]
-    partial class create_the_DB
+    [Migration("20250325141927_file-history")]
+    partial class filehistory
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace DocuManager.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ActivityHistoryFile", b =>
+                {
+                    b.Property<int>("ActivityHistoriesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FilesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ActivityHistoriesId", "FilesId");
+
+                    b.HasIndex("FilesId");
+
+                    b.ToTable("ActivityHistoryFile");
+                });
 
             modelBuilder.Entity("DocuManager.Core.Entities.ActivityHistory", b =>
                 {
@@ -36,7 +51,7 @@ namespace DocuManager.Data.Migrations
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -79,9 +94,6 @@ namespace DocuManager.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ActivityHistoryId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -107,8 +119,6 @@ namespace DocuManager.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ActivityHistoryId");
 
                     b.HasIndex("CategoryId");
 
@@ -149,13 +159,27 @@ namespace DocuManager.Data.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("ActivityHistoryFile", b =>
+                {
+                    b.HasOne("DocuManager.Core.Entities.ActivityHistory", null)
+                        .WithMany()
+                        .HasForeignKey("ActivityHistoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DocuManager.Core.Entities.File", null)
+                        .WithMany()
+                        .HasForeignKey("FilesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("DocuManager.Core.Entities.ActivityHistory", b =>
                 {
                     b.HasOne("DocuManager.Core.Entities.User", "User")
                         .WithMany("History")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("User");
                 });
@@ -173,11 +197,6 @@ namespace DocuManager.Data.Migrations
 
             modelBuilder.Entity("DocuManager.Core.Entities.File", b =>
                 {
-                    b.HasOne("DocuManager.Core.Entities.ActivityHistory", null)
-                        .WithMany("Files")
-                        .HasForeignKey("ActivityHistoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("DocuManager.Core.Entities.Category", "Category")
                         .WithMany("Files")
                         .HasForeignKey("CategoryId")
@@ -191,11 +210,6 @@ namespace DocuManager.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("DocuManager.Core.Entities.ActivityHistory", b =>
-                {
-                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("DocuManager.Core.Entities.Category", b =>

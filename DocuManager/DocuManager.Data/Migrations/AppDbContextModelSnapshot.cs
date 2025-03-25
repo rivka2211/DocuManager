@@ -22,6 +22,21 @@ namespace DocuManager.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ActivityHistoryFile", b =>
+                {
+                    b.Property<int>("ActivityHistoriesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FilesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ActivityHistoriesId", "FilesId");
+
+                    b.HasIndex("FilesId");
+
+                    b.ToTable("ActivityHistoryFile");
+                });
+
             modelBuilder.Entity("DocuManager.Core.Entities.ActivityHistory", b =>
                 {
                     b.Property<int>("Id")
@@ -76,9 +91,6 @@ namespace DocuManager.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ActivityHistoryId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -104,8 +116,6 @@ namespace DocuManager.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ActivityHistoryId");
 
                     b.HasIndex("CategoryId");
 
@@ -146,6 +156,21 @@ namespace DocuManager.Data.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("ActivityHistoryFile", b =>
+                {
+                    b.HasOne("DocuManager.Core.Entities.ActivityHistory", null)
+                        .WithMany()
+                        .HasForeignKey("ActivityHistoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DocuManager.Core.Entities.File", null)
+                        .WithMany()
+                        .HasForeignKey("FilesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("DocuManager.Core.Entities.ActivityHistory", b =>
                 {
                     b.HasOne("DocuManager.Core.Entities.User", "User")
@@ -169,11 +194,6 @@ namespace DocuManager.Data.Migrations
 
             modelBuilder.Entity("DocuManager.Core.Entities.File", b =>
                 {
-                    b.HasOne("DocuManager.Core.Entities.ActivityHistory", null)
-                        .WithMany("Files")
-                        .HasForeignKey("ActivityHistoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("DocuManager.Core.Entities.Category", "Category")
                         .WithMany("Files")
                         .HasForeignKey("CategoryId")
@@ -187,11 +207,6 @@ namespace DocuManager.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("DocuManager.Core.Entities.ActivityHistory", b =>
-                {
-                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("DocuManager.Core.Entities.Category", b =>

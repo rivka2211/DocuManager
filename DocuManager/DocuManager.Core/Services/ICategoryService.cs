@@ -11,7 +11,7 @@ namespace DocuManager.Core.Services
     {
         Task<List<CategoryDTO>> GetAllCategoriesAsync();
         Task<CategoryDTO> GetCategoryByIdAsync(int id);
-        Task<CategoryDTO> AddCategoryAsync(CategoryDTO categoryDto);
+        Task<CategoryDTO> AddCategoryAsync(int userId,string name);
         Task<CategoryDTO> UpdateCategoryAsync(CategoryDTO categoryDto);
         Task<bool> DeleteCategoryAsync(int id);
     }

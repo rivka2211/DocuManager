@@ -66,7 +66,7 @@ namespace DocuManager.Data.Repositories
             {
                 _context.Files.Update(file);
                 await _context.SaveChangesAsync();
-                 return file;
+                return file;
             }
             return default;
         }

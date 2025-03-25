@@ -16,6 +16,7 @@
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
 
+
         public AuthController(IUserService userService, IConfiguration configuration)
         {
             _userService = userService;
@@ -30,12 +31,8 @@
             {
                 return BadRequest("User already exists");
             }
-
-            await _userService.AddUserAsync(existingUser);
-
-            var newUser = await _userService.GetUserByNameAsync(userDto.Name); // שליפת המשתמש אחרי ההוספה
+            var newUser= await _userService.AddUserAsync(userDto);
             var token = GenerateJwtToken(newUser);
-
             return Ok(new { Token = token });
         }
 

@@ -11,6 +11,7 @@ namespace DocuManager.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<ActivityHistory> ActivityHistories { get; set; }
 
+       
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -44,10 +45,10 @@ namespace DocuManager.Data
                 .HasForeignKey(ah => ah.UserId)
                 .OnDelete(DeleteBehavior.SetNull); // ההיסטוריה לא נמחקת עם המשתמש
 
-            modelBuilder.Entity<ActivityHistory>()
-                .HasMany(ah => ah.Files)
-                .WithOne()
-                .OnDelete(DeleteBehavior.SetNull); // אם ההיסטוריה נמחקת, רק מסירים את הקישור מהקובץ
+            //modelBuilder.Entity<ActivityHistory>()
+            //    .HasMany(ah => ah.Files)
+            //    .WithOne()
+            //    .OnDelete(DeleteBehavior.SetNull); // אם ההיסטוריה נמחקת, רק מסירים את הקישור מהקובץ
 
             // 🔹 הוספת אינדקסים לשיפור ביצועים
             modelBuilder.Entity<File>()

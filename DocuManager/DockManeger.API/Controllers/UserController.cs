@@ -35,10 +35,21 @@ namespace DocuManager.WebAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateUser( UserUpdateDTO UserDTO)
+        public async Task<IActionResult> UpdateUser(UserUpdateDTO UserDTO)
         {
-            await _userService.UpdateUserAsync(UserId(), UserDTO);
-            return NoContent();
+            var user = await _userService.UpdateUserAsync(UserId(), UserDTO);
+            if (user == null)
+                return BadRequest();
+            return Ok(user);
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> DeleteUser()
+        {
+            var good = await _userService.SoftDeleteUserAsync(UserId());
+            if (good)
+                return NoContent();
+            return BadRequest();
         }
 
         //admin functions
@@ -47,26 +58,39 @@ namespace DocuManager.WebAPI.Controllers
         {
             if (!IsAdmin())
                 return Forbid();
-            var users = await _userService.GetAllUsersAsync();
+            var users = await _userService.GetAllActiveUsersAsync();
             return Ok(users);
         }
-   
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllAllUsers()
         {
             if (!IsAdmin())
                 return Forbid();
-            await _userService.DeleteUserAsync(id);
-            return NoContent();
+            var users = await _userService.GetAllUsersAsync();
+            return Ok(users);
         }
-    
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> HardDeleteUser(int id)
+        {
+            if (!IsAdmin())
+                return Forbid();
+            var good = await _userService.DeleteUserAsync(id);
+            if (good)
+                return NoContent();
+            return BadRequest();
+        }
+
         [HttpPatch("{id}/role")]
         public async Task<IActionResult> UpdateUserRole(int id, [FromBody] string role)
         {
             if (!IsAdmin())
                 return Forbid();
-            await _userService.UpdateUserRoleAsync(id, role);
-            return NoContent();
+            var good = await _userService.UpdateUserRoleAsync(id, role);
+            if (good)
+                return NoContent();
+            return BadRequest();
         }
 
 

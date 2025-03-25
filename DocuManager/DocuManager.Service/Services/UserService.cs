@@ -20,14 +20,14 @@ namespace DocuManager.Service
     {
         private readonly IUserRepository _userRepository;
         private readonly IFileService _fileService;
-        private readonly ICategoryService _categoryService;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userService,IFileService fileRepository,ICategoryService categoryService, IMapper mapper)
+        public UserService(IUserRepository userService,IFileService fileRepository,ICategoryRepository categoryService, IMapper mapper)
         {
             _userRepository = userService;
             _fileService = fileRepository;
-            _categoryService = categoryService;
+            _categoryRepository = categoryService;
             _mapper = mapper;
         }
 
@@ -43,31 +43,40 @@ namespace DocuManager.Service
             return user == null ? null : _mapper.Map<UserDTO>(user);
         }
 
-        public async Task AddUserAsync(UserDTO userDto)
+        public async Task<UserDTO> AddUserAsync(UserUpdateDTO userDto)
         {
-            var categoryDto = new CategoryDTO { Files = new List<FileDTO>(), Name = "שונות", Id = 0 };
-            var category =await _categoryService.AddCategoryAsync(categoryDto);
-            userDto.Categories.Add(category);
             var user = _mapper.Map<User>(userDto);
-            await _userRepository.AddUserAsync(user);
+            user=  await _userRepository.AddUserAsync(user);
+            await _userRepository.SaveChangesAsync();
+            var category = new Category {Id = 0, Name = "שונות",UserId=user.Id,User=user, Files = new List<File>(),IsDeleted=false };
+            category = await _categoryRepository.AddCategoryAsync(category);
+            await _categoryRepository.SaveChangesAsync();
+            return _mapper.Map<UserDTO>(user);
         }
 
-        public async Task UpdateUserAsync(int id, UserUpdateDTO userUpdateDto)
+        public async Task<UserDTO> UpdateUserAsync(int id, UserUpdateDTO userUpdateDto)
         {
             var user = _mapper.Map<User>(userUpdateDto);
             user.Id = id;
-            await _userRepository.UpdateUserAsync(user);
+            user= await _userRepository.UpdateUserAsync(user);
+            await _userRepository.SaveChangesAsync();
+            return _mapper.Map<UserDTO>(user);
         }
 
-        public async Task DeleteUserAsync(int id)
-        {
-            await SoftDeleteUserAsync(id);
-        }
-
-        public async Task SoftDeleteUserAsync(int id)
+        public async Task<bool> DeleteUserAsync(int id)
         {
             await _fileService.DeleteUserFilesAsync(id);
-            await _userRepository.SoftDeleteUserAsync(id);
+            var good= await _userRepository.DeleteUserAsync(id);
+            await _userRepository.SaveChangesAsync();
+            return good;
+        }
+
+        public async Task<bool> SoftDeleteUserAsync(int id)
+        {
+            await _fileService.DeleteUserFilesAsync(id);
+           var good= await _userRepository.SoftDeleteUserAsync(id);
+            await _userRepository.SaveChangesAsync();
+            return good;
         }
 
         public async Task<IEnumerable<UserDTO>> GetAllActiveUsersAsync()
@@ -76,9 +85,11 @@ namespace DocuManager.Service
             return _mapper.Map<IEnumerable<UserDTO>>(users);
         }
 
-        public async Task UpdateUserRoleAsync(int userId, string role)
+        public async Task<bool> UpdateUserRoleAsync(int userId, string role)
         {
-            await _userRepository.UpdateUserRoleAsync(userId, role);
+          var s= await _userRepository.UpdateUserRoleAsync(userId, role);
+            await _userRepository.SaveChangesAsync();
+            return s;
         }
 
         public async Task<UserDTO?> GetUserByNameAsync(string name)

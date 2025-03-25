@@ -20,6 +20,7 @@ namespace DocuManager.Core.Entities
 
         public List<File> Files { get; set; }
 
+
         public ActivityHistory()
         {
 

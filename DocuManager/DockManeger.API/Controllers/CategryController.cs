@@ -18,6 +18,7 @@ namespace DocuManager.API.Controllers
         }
 
         private bool IsAdmin() => HttpContext.Items["UserRole"]?.ToString() == "admin";
+        private int UserId() => int.Parse(HttpContext.Items["UserId"]?.ToString());
 
         [HttpGet]
         public async Task<ActionResult<List<CategoryDTO>>> GetAll()
@@ -36,9 +37,9 @@ namespace DocuManager.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CategoryDTO>> AddCategory(CategoryDTO categoryDto)
+        public async Task<ActionResult<CategoryDTO>> AddCategory(string name)
         {
-            var newCategory = await _categoryService.AddCategoryAsync(categoryDto);
+            var newCategory = await _categoryService.AddCategoryAsync(UserId(),name);
             return CreatedAtAction(nameof(GetById), newCategory);
         }
 

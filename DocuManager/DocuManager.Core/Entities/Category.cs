@@ -23,8 +23,6 @@ namespace DocuManager.Core.Entities
 
         public bool IsDeleted { get; set; }
 
-        //// קשר Many-to-Many - קטגוריה יכולה להכיל קבצים רבים ולהיות תגית לקבצים רבים
-        //public List<CategoryFile> CategoryFiles { get; set; }
     }
 
 }

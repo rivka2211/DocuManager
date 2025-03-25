@@ -38,45 +38,46 @@ namespace DocuManager.Data.Repositories
             return await _context.Users.Include(u => u.Categories).AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public async Task AddUserAsync(User user)
+        public async Task<User> AddUserAsync(User user)
         {
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+          return  _context.Users.Add(user).Entity;
         }
 
-        public async Task UpdateUserAsync(User user)
+        public async Task<User> UpdateUserAsync(User user)
         {
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
+            return  _context.Users.Update(user).Entity;
         }
-        public async Task SoftDeleteUserAsync(int id)
+        public async Task<bool> SoftDeleteUserAsync(int id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user != null)
             {
                 user.IsDeleted = true;
-                await _context.SaveChangesAsync();
+                return true;
             }
+            return false;
         }
 
-        public async Task DeleteUserAsync(int id)
+        public async Task<bool> DeleteUserAsync(int id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user != null)
             {
                 _context.Users.Remove(user);
-                await _context.SaveChangesAsync();
+                return true;
             }
+            return false;
         }
 
-        public async Task UpdateUserRoleAsync(int userId, string role)
+        public async Task<bool> UpdateUserRoleAsync(int userId, string role)
         {
             var user = await _context.Users.FindAsync(userId);
             if (user != null)
             {
                 user.Role = role;
-                await _context.SaveChangesAsync();
+                return true;
             }
+            return false;
         }
 
         public async Task<User?> GetUserByNameAsync(string name)
@@ -88,6 +89,11 @@ namespace DocuManager.Data.Repositories
         {
             return await _context.Users.Include(u => u.Categories).AsNoTracking().FirstOrDefaultAsync(u => u.Name == name && u.Password == password);
         }
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
 
