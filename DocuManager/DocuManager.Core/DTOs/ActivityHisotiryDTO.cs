@@ -11,7 +11,7 @@ namespace DocuManager.Core.DTOs
     {
         public int Id { get; set; }
 
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
 
         public DateTime Timestamp { get; set; }
 

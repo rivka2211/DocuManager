@@ -51,7 +51,10 @@ namespace DocuManager.Service.Services
         public async Task<bool> DeleteCategoryAsync(int id)
         {
             var category = await _categoryRepository.GetCategoryByIdAsync(id);
+            if (category == null)
+                return false;
             category.Files.ForEach(file => file.CategoryId = 0);
+            await _categoryRepository.SaveChangesAsync();
             return await _categoryRepository.DeleteCategoryAsync(id);
         }
     }

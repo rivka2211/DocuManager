@@ -14,5 +14,6 @@ namespace DocuManager.Core.Repositories
         Task<Category> AddCategoryAsync(Category category);
         Task<Category> UpdateCategoryAsync(Category category);
         Task<bool> DeleteCategoryAsync(int id);
+        Task SaveChangesAsync();
     }
 }

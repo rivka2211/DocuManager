@@ -49,8 +49,13 @@ namespace DocuManager.Data.Repositories
             if (category == null) return false;
 
             _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            await SaveChangesAsync();
             return true;
+        }
+
+        public async Task SaveChangesAsync()
+        {
+           await _context.SaveChangesAsync();
         }
     }
 

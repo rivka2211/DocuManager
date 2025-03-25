@@ -12,9 +12,9 @@ namespace DocuManager.Core.Entities
         public int Id { get; set; }
 
         [ForeignKey("UserId")]
-        public virtual User User { get; set; }
+        public virtual User? User { get; set; }
 
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
 
         public DateTime Timestamp { get; set; }
 
