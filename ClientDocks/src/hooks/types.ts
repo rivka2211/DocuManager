@@ -1,31 +1,62 @@
-export type FileDTO = {
-  id: number
-  name: string;
-  userId: number;
-  size:string;
-  category: string;
-  url: string;
-  UploadDate?: Date;
-  IssueDate?: Date;
+export type ActivityHistoryDTO = {
+  id: number;
+  userId?: number;
+  timestamp: Date;
+  files: FileUpdateDTO[];
 };
-  
-  export interface UserDTO {
-    id: number;
-    name: string;
-    email: string;
-    files: FileDTO[];
-  }
-  
-  export interface UserUpdateDto {
-    name?: string;
-    email?: string;
-  }
-  
-  export interface FileCreateDTO {
-    fileName: string;
-    fileSize: number;
-  }
-  
-  export interface UpdateFileNameDTO {
-    name: string;
-  }
+
+export type CategoryDTO = {
+  id: number;
+  name: string;
+  files: FileDTO[];
+};
+
+export type FileDTO = {
+  id: number;
+  fileName: string;
+  fileUrl: string;
+  uploadTime: Date;
+  ownerId: number;
+  content: string;
+  categoryId: number;
+  category: CategoryDTO;
+  isDeleted: boolean;
+};
+
+export type FileCreateDTO = {
+  fileName: string;
+  fileUrl: string;
+  ownerId: number;
+  categoryId: number;
+  isDeleted: boolean;
+};
+
+export type FileUpdateDTO = {
+  fileName: string;
+  categoryId: number;
+};
+
+export type UserDTO = {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+  categories: CategoryDTO[];
+  isDeleted: boolean;
+};
+
+export type UserUpdateDTO = {
+  name: string;
+  password: string;
+  email: string;
+};
+
+export type UserHistoryDTO = {
+  name: string;
+  history: ActivityHistory[];
+};
+
+export type ActivityHistory = {
+  // מבוסס על השימוש בתוך UserHistoryDTO
+};

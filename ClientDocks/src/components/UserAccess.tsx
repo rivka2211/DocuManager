@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
-import { Button, Modal, Box, TextField, Typography } from "@mui/material";
+import { Button, Modal, Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import MyTextField from "./MyTextField";
+import { userStore } from "../hooks/store/userStore";
 
 const UserAccess = observer(({ isLogin }: { isLogin: number }) => {
     //2=update 1=register, 0=login
@@ -26,32 +28,20 @@ const UserAccess = observer(({ isLogin }: { isLogin: number }) => {
         "&:hover": { backgroundColor: isLogin == 1 ? theme.primary.dark : theme.secondary.dark },
     };
 
-
-    const textStyle = {
-        "& .MuiOutlinedInput-root": {
-            borderRadius: "8px",
-            "& fieldset": {
-                borderColor: theme.primary.main, // צבע המסגרת
-            },
-            "&:hover fieldset": {
-                borderColor: theme.primary.dark, // צבע בעת מעבר עם העכבר
-            },
-            "&.Mui-focused fieldset": {
-                borderColor: theme.primary.dark, // צבע בעת פוקוס
-            },
-        },
-    }
-   
     const handleSubmit = async () => {
-        if (isLogin) {
+        if (isLogin===0) {
+            await userStore.login(formData.name, formData.password);
             console.log("isLogin", formData);
-            //   await UserStore.login(formData.name, formData.password);
-        } else {
+        } else if (isLogin===1) {
+            await userStore.register(formData.name, formData.email, formData.password);
             console.log("isRegister", formData);
-            //   await UserStore.register(formData.name, formData.email, formData.password);
+        }else{
+            await userStore.update(formData.name, formData.email, formData.password);
+            console.log("isUpdate", formData);
         }
         setOpen(false);
     };
+
 
     return (<>
         <Button
@@ -79,43 +69,14 @@ const UserAccess = observer(({ isLogin }: { isLogin: number }) => {
                     {AllText.title[isLogin]}
                 </Typography>
 
-                <TextField
-                    label="שם משתמש"
-                    name="name"
-                    value={formData.name}
-                    required
-                    margin="normal"
-                    variant="outlined"
-                    fullWidth
-                    onChange={handleChange}
-                    sx={textStyle}
-                />
+                <MyTextField label="שם משתמש" name="name" type="text"
+                    value={formData.name} onChange={handleChange} />
                 {isLogin > 0 && (
-                    <TextField
-                        label="אימייל"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        required
-                        margin="normal"
-                        variant="outlined"
-                        fullWidth
-                        onChange={handleChange}
-                        sx={textStyle}
-                    />
+                    <MyTextField label="אימייל" name="email" type="email"
+                        value={formData.email} onChange={handleChange} />
                 )}
-                <TextField
-                    label="סיסמה"
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    required
-                    margin="normal"
-                    variant="outlined"
-                    fullWidth
-                    onChange={handleChange}
-                    sx={textStyle}
-                />
+                <MyTextField label="סיסמה" name="password" type="password"
+                    value={formData.password} onChange={handleChange} />
                 <Button
                     fullWidth
                     variant="contained"

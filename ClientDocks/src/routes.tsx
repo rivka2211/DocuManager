@@ -1,10 +1,14 @@
 
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import MainScreen from "./pages/MainScreen";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
+import { observer } from "mobx-react";
+import { userStore } from "./hooks/store/userStore";
 
-
+export const ProtectedRoute = observer(() => {
+  return userStore.user ? <Outlet /> : <Navigate to="/" />;
+});
 const AppRoutes = () => {
   return (
     <Routes>

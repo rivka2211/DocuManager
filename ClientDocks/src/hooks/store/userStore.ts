@@ -1,100 +1,92 @@
 import { makeAutoObservable } from "mobx";
 import axios from "axios";
-import { FileDTO, UserDTO, UserUpdateDto, FileCreateDTO, UpdateFileNameDTO } from "../types";
-// import { ApiClient } from "../../api/client";
+import { UserDTO } from "../types";
 
-const MYAPI="https://localhost:7175/api";
-// const apiClient=new ApiClient("https://localhost:7175");
-// apiClient.fileGET(1).then(console.log);
+const MYAPI = "http://localhost:5299";
 
-export class UserStore {
+const apiClient = axios.create({
+  baseURL: MYAPI,
+});
+
+class UserStore {
   user: UserDTO | null = null;
-  files: FileDTO[] = [];
+  token: string = sessionStorage.getItem("token") ?? "";
   loading: boolean = false;
   error: any = null;
 
   constructor() {
     makeAutoObservable(this);
-    this.setupAxiosInterceptors();
+    this.setAuthHeader(); 
   }
 
-  setupAxiosInterceptors() {
-    axios.interceptors.request.use(
-      (config) => {
-        const token = sessionStorage.getItem("token");
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-      },
-      (error) => Promise.reject(error)
-    );
+ 
+  setAuthHeader() {
+    if (this.token) {
+      apiClient.defaults.headers.common["Authorization"] = `Bearer ${this.token}`;
+    } else {
+      delete apiClient.defaults.headers.common["Authorization"];
+    }
   }
 
-  async fetchUser(userId: number) {
-    this.loading = true;
+  async login(name: string, password: string) {
     try {
-      const response = await axios.get<UserDTO>(`${MYAPI}/User/${userId}`);
+      const response = await apiClient.post("/api/login", { name, password });
+      this.token = response.data.token;
+      sessionStorage.setItem("token", this.token);
+      this.setAuthHeader(); 
+      await this.loadUser();
+    } catch (error) {
+      this.handleError(error, "Login failed");
+    }
+  }
+
+  async register(name: string, email: string, password: string) {
+    try {
+      const response = await apiClient.post("/api/register", { name, email, password });
+      this.token = response.data.token;
+      sessionStorage.setItem("token", this.token);
+      this.setAuthHeader(); 
+      await this.loadUser();
+    } catch (error) {
+      this.handleError(error, "Registration failed");
+    }
+  }
+
+  async update(name: string, email: string, password: string) {
+    try {
+      await apiClient.put("/api/user", { name, email, password });
+      await this.loadUser();
+    } catch (error) {
+      this.handleError(error, "Failed to update user");
+    }
+  }
+
+  async loadUser() {
+    if (!this.token) return;
+    try {
+      const response = await apiClient.get("/api/user");
       this.user = response.data;
-      this.files = response.data.files || [];
     } catch (error) {
-      this.error = error;
-    } finally {
-      this.loading = false;
+      this.handleError(error, "Failed to load user");
     }
+    console.log("user", this.user);
   }
 
-  async updateUser(userId: number, userData: UserUpdateDto) {
-    try {
-      await axios.put(`${MYAPI}/User/${userId}`, userData);
-      if (this.user) {
-        this.user = { ...this.user, ...userData };
-      }
-    } catch (error) {
-      this.error = error;
-    }
+  logout() {
+    this.user = null;
+    this.token = "";
+    sessionStorage.removeItem("token");
+    this.setAuthHeader(); 
   }
 
-  async deleteUser(userId: number) {
-    try {
-      await axios.delete(`${MYAPI}/User/${userId}`);
-      this.user = null;
-      this.files = [];
-    } catch (error) {
-      this.error = error;
+  handleError(error: any, message: string) {
+    if (axios.isAxiosError(error) && error.response) {
+      this.error = error.response.data;
+    } else {
+      this.error = "An unknown error occurred";
     }
-  }
-
-  async addFile(file: FileCreateDTO) {
-    if (!this.user) return;
-    try {
-      const response = await axios.post<FileDTO>(`${MYAPI}/User/${this.user.id}/files`, file);
-      this.files.push(response.data);
-    } catch (error) {
-      this.error = error;
-    }
-  }
-
-  async deleteFile(fileId: number) {
-    if (!this.user) return;
-    try {
-      await axios.delete(`${MYAPI}/User/${this.user.id}/files/${fileId}`);
-      this.files = this.files.filter(file => file.id !== fileId);
-    } catch (error) {
-      this.error = error;
-    }
-  }
-
-  async updateFileName(fileId: number, newName: string) {
-    if (!this.user) return;
-    try {
-      await axios.patch(`${MYAPI}/User/${this.user.id}/files/${fileId}`, { name: newName } as UpdateFileNameDTO);
-      this.files = this.files.map(file => file.id === fileId ? { ...file, fileName: newName } : file);
-    } catch (error) {
-      this.error = error;
-    }
+    console.error(message, error);
   }
 }
 
-// const userStore = new UserStore();
-// export default userStore;
+export const userStore = new UserStore();

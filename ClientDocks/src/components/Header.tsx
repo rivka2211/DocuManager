@@ -2,31 +2,31 @@
 import { AppBar, Toolbar, Tabs, Tab } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Link, useLocation } from "react-router-dom";
+import { userStore } from "../hooks/store/userStore";
+import { observer } from "mobx-react";
 
-const categories = [
-  { label: "home", path: "/category/home" },
-  { label: "about", path: "/category/about" },
-  { label: "service", path: "/category/services" },
-  { label: "contact", path: "/category/contact" },
-  { label: "profile", path: "/profile" },
-  { label: "home", path: "/category/home" },
-  { label: "about", path: "/category/about" },
-  { label: "service", path: "/category/services" },
-  { label: "contact", path: "/category/contact" },
-];
-
-
-
-const Header = () => {
+// const Header = () => {
+//   const theme = useTheme();
+//   const location = useLocation();
+//   const categories = userStore.user?.categories;
+//   const tabValue = categories.find(category => "category/"+category.name=== location.pathname) || '/profile';
+const Header = observer(() => { 
   const theme = useTheme();
   const location = useLocation();
-  const tabValue = categories.find(category => category.path === location.pathname)?.path || '/profile';
+  const categories = userStore.user?.categories ?? []; // אם המשתמש לא נטען עדיין, יהיה מערך ריק
+
+  // יצירת path דינאמי לכל קטגוריה
+  const categoryPaths = categories.map(category => ({
+    ...category,
+    path: `/category/${encodeURIComponent(category.name)}`,
+  }));
+
+  const tabValue = categoryPaths.find(category => category.path === location.pathname)?.path || "/profile";
+
 
   const getTabStyle = ( isActive: boolean) => ({
     backgroundColor: isActive ? theme.palette.secondary.main : theme.palette.primary.main,
     color: "white",
-    // fontSize: "2rem",
-    //  fontSize: "clamp(1.2rem, 4vw, 2rem)",
     fontSize: "clamp(0.8rem, 2.5vw, 1.5rem)", 
     fontWeight: "bold",
     border: `2px solid ${theme.palette.secondary.main}`,
@@ -46,15 +46,14 @@ const Header = () => {
         <Tabs
           value={tabValue}
           textColor="primary"
-        //   indicatorColor="primary"
           sx={{ width: "100%", minHeight: "auto", margin: 0, padding: 0 ,
             "& .MuiTabs-indicator": { display: "none" }, 
           }}
         >
-          {categories.map((category) => (
+          {categoryPaths.map((category) => (
             <Tab
               key={category.path}
-              label={category.label}
+              label={category.name}
               value={category.path}
               component={Link}
               to={category.path}
@@ -65,6 +64,6 @@ const Header = () => {
       </Toolbar>
     </AppBar>
   );
-};
+});
 
 export default Header;
