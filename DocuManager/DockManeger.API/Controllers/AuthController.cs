@@ -9,7 +9,7 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    [Route("api/[controller]")]
+    [Route("api")]
     [ApiController]
     public class AuthController : ControllerBase
     {
