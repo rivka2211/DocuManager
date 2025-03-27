@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
 import { Typography, Box } from "@mui/material";
 import OneFile from "../components/OneFile";
-import { userStore } from "../hooks/store/userStore";
+import { userStore } from "../hooks/store/UserStore";
+
   
 const MainScreen = () => {
   const { categoryName } = useParams<{ categoryName: string }>();

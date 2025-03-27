@@ -4,7 +4,7 @@ import MainScreen from "./pages/MainScreen";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
 import { observer } from "mobx-react";
-import { userStore } from "./hooks/store/userStore";
+import { userStore } from "./hooks/store/UserStore";
 
 export const ProtectedRoute = observer(() => {
   return userStore.user ? <Outlet /> : <Navigate to="/" />;

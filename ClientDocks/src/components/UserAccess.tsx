@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import { Button, Modal, Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import MyTextField from "./MyTextField";
-import { userStore } from "../hooks/store/userStore";
+import { userStore } from "../hooks/store/UserStore";
 
 const UserAccess = observer(({ isLogin }: { isLogin: number }) => {
     //2=update 1=register, 0=login

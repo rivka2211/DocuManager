@@ -2,20 +2,14 @@
 import { AppBar, Toolbar, Tabs, Tab } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Link, useLocation } from "react-router-dom";
-import { userStore } from "../hooks/store/userStore";
+import { userStore } from "../hooks/store/UserStore";
 import { observer } from "mobx-react";
 
-// const Header = () => {
-//   const theme = useTheme();
-//   const location = useLocation();
-//   const categories = userStore.user?.categories;
-//   const tabValue = categories.find(category => "category/"+category.name=== location.pathname) || '/profile';
 const Header = observer(() => { 
   const theme = useTheme();
   const location = useLocation();
-  const categories = userStore.user?.categories ?? []; // אם המשתמש לא נטען עדיין, יהיה מערך ריק
+  const categories = userStore.user?.categories ?? []; 
 
-  // יצירת path דינאמי לכל קטגוריה
   const categoryPaths = categories.map(category => ({
     ...category,
     path: `/category/${encodeURIComponent(category.name)}`,

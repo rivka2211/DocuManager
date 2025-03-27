@@ -8,3 +8,4 @@ class ActivityStore {
         makeAutoObservable(this);
     }
 }
+export const activityStore = new ActivityStore();

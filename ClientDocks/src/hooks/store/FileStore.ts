@@ -8,3 +8,4 @@ class FileStore {
         makeAutoObservable(this);
     }
 }
+export const fileStore = new FileStore();

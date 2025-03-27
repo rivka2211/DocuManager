@@ -1,5 +1,5 @@
 import UserAccess from "../components/UserAccess"
-import { userStore } from "../hooks/store/userStore"
+import { userStore } from "../hooks/store/UserStore"
 
 const ProfilePage = () => {
 
