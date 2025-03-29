@@ -48,7 +48,7 @@ namespace DocuManager.Data.Repositories
         public async Task<List<File>> GetFilesByCategoryIdAsync(int categoryId)
         {
             return await _context.Files
-                .Where(f => f.CategoryId == categoryId).ToListAsync();
+                .Where(f =>f.IsDeleted==false&& f.CategoryId == categoryId).ToListAsync();
         }
 
         public async Task<File> AddFileAsync(int userId, File file)
@@ -65,7 +65,7 @@ namespace DocuManager.Data.Repositories
             if (f != null && f.OwnerId == userId)
             {
                 _context.Files.Update(file);
-                await _context.SaveChangesAsync();
+                await SaveChangesAsync();
                 return file;
             }
             return default;
@@ -76,9 +76,9 @@ namespace DocuManager.Data.Repositories
             var f = await GetFileByIdAsync(id);
             if (f != null && f.OwnerId == userId)
             {
-                f.IsDeleted = false;
+                f.IsDeleted = true;
                 _context.Files.Update(f);
-                await _context.SaveChangesAsync();
+                await SaveChangesAsync();
                 return true;
             }
             return false;

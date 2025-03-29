@@ -73,6 +73,11 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+builder.Configuration.AddUserSecrets<Program>();
+
+builder.Services.AddDbContext<AppDbContext>(
+    options => options.UseSqlServer(builder.Configuration["DBConnectionString"]));
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
@@ -82,21 +87,28 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IActivityHistoryRepository, ActivityHistoryRepository>();
 builder.Services.AddScoped<IActivityHistoryService, ActivityHistoryService>();
 
-
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseSqlServer(builder.Configuration["DBConnectionString"]));
+
+//try
+//{
+//    using (var scope = builder.Services.BuildServiceProvider().CreateScope())
+//    {
+//        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//        dbContext.Database.CanConnect(); // מוודא שה-DB מחובר
+//        Console.WriteLine("Database connection successful!");
+//    }
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine($"Database connection failed: {ex.Message}");
+//}
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-//}
+app.UseSwagger();
 
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
@@ -106,10 +118,10 @@ app.UseCors("MyPolicy");
 
 app.UseAuthorization();
 
-app.UseMiddleware<JwtMiddleware>();
-
 app.MapControllers();
 
 app.MapGet("/", () => "PaperPaws server is running");
+
+app.UseMiddleware<JwtMiddleware>();
 
 app.Run();
