@@ -1,3 +1,5 @@
+import FileAccess from "../components/FileAccess"
+import Logout from "../components/Logout"
 import UserAccess from "../components/UserAccess"
 import { userStore } from "../hooks/store/UserStore"
 
@@ -12,6 +14,8 @@ const ProfilePage = () => {
             <h3>{user?.categories.map((category)=>category.name).join(", ")}</h3>
             <h4>{user?.categories.map((category)=>category.files.map((file)=>file.fileName).join(", ")).join(", ")}</h4>
             <UserAccess isLogin={2} />
+            <Logout/>
+            <FileAccess actionType={1}/>
         </div>
     )
 }

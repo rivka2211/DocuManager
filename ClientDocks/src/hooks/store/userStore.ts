@@ -19,7 +19,6 @@ class UserStore {
     this.setAuthHeader(); 
   }
 
- 
   setAuthHeader() {
     if (this.token) {
       apiClient.defaults.headers.common["Authorization"] = `Bearer ${this.token}`;
@@ -64,7 +63,7 @@ class UserStore {
   async loadUser() {
     if (!this.token) return;
     try {
-      const response = await apiClient.get("/api/user");
+      const response = await apiClient.get("/api/User/user");
       this.user = response.data;
     } catch (error) {
       this.handleError(error, "Failed to load user");
@@ -77,6 +76,7 @@ class UserStore {
     this.token = "";
     sessionStorage.removeItem("token");
     this.setAuthHeader(); 
+    //add user history
   }
 
   handleError(error: any, message: string) {

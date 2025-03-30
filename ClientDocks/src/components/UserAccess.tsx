@@ -4,6 +4,7 @@ import { Button, Modal, Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import MyTextField from "./MyTextField";
 import { userStore } from "../hooks/store/UserStore";
+import { useNavigate } from 'react-router-dom';
 
 const UserAccess = observer(({ isLogin }: { isLogin: number }) => {
     //2=update 1=register, 0=login
@@ -15,6 +16,7 @@ const UserAccess = observer(({ isLogin }: { isLogin: number }) => {
     const theme = useTheme().palette;
     const [open, setOpen] = useState(false);
     const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+    const navigate = useNavigate();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,16 +31,17 @@ const UserAccess = observer(({ isLogin }: { isLogin: number }) => {
     };
 
     const handleSubmit = async () => {
-        if (isLogin===0) {
+        if (isLogin === 0) {
             await userStore.login(formData.name, formData.password);
             console.log("isLogin", formData);
-        } else if (isLogin===1) {
+        } else if (isLogin === 1) {
             await userStore.register(formData.name, formData.email, formData.password);
             console.log("isRegister", formData);
-        }else{
+        } else {
             await userStore.update(formData.name, formData.email, formData.password);
             console.log("isUpdate", formData);
         }
+        navigate("/profile");
         setOpen(false);
     };
 

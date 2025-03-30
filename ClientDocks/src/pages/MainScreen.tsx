@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { Typography, Box } from "@mui/material";
 import OneFile from "../components/OneFile";
 import { userStore } from "../hooks/store/UserStore";
+import FileAccess from "../components/FileAccess";
 
   
 const MainScreen = () => {
@@ -12,6 +13,7 @@ const MainScreen = () => {
 
   return (
     <Box sx={{ p: 4 }}>
+      <FileAccess actionType={currentCategory?.id||1} />
       <Typography variant="h4">קטגוריה: {categoryName}</Typography>
       <ul>
       {files.map((file) => (

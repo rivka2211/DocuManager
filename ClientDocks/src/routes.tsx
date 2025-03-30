@@ -14,9 +14,12 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/home" element={<HomePage />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/category/:categoryName" element={<MainScreen />} />
       <Route path="*" element={<Navigate to="/" />} />
+      
+      <Route element={<ProtectedRoute />}>
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/category/:categoryName" element={<MainScreen />} />
+      </Route>
     </Routes>
   );
 };

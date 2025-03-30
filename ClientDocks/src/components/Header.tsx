@@ -15,6 +15,12 @@ const Header = observer(() => {
     path: `/category/${encodeURIComponent(category.name)}`,
   }));
 
+  categoryPaths.unshift({
+    name: "פרופיל", path: "/profile",
+    id: 0,
+    files: []
+  });
+
   const tabValue = categoryPaths.find(category => category.path === location.pathname)?.path || "/profile";
 
 
