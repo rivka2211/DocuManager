@@ -1,44 +1,29 @@
-import React, { useEffect, useRef } from "react";
-import "./HomePage.css"; // קובץ עיצוב מותאם אישית
+import { Container, Box, Typography, keyframes } from "@mui/material";
 import Image from "../assets/homePage.jpg"; // תמונה מותאמת אישית
 import UserAccess from "../components/UserAccess";
 
-const Home: React.FC = () => {
-  const titleRef = useRef<HTMLHeadingElement | null>(null);
+const floatUp = keyframes`
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-10px); }
+`;
 
-  // אפקט להופעת הכותרת בהדרגה
-  useEffect(() => {
-    if (titleRef.current) {
-      titleRef.current.style.opacity = "1";
-      titleRef.current.style.transform = "translateY(0)";
-    }
-  }, []);
+const HomePage = () => (
+  <Container sx={{ textAlign: 'center', background: 'linear-gradient(90deg, #1E499F 50%, #FFCD05 50%)', color: 'white', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+    <Typography variant="h2" sx={{ fontSize: { xs: '1.5rem', sm: '2.5rem', md: '3.5rem' }, fontWeight: 'bold', marginBottom: '20px', opacity: 1, transform: 'translateY(0)', transition: 'opacity 1s ease-out, transform 1s ease-out' }}>
+      המסמכים שלך, מסודרים ונגישים תמיד –
+    </Typography>
+    <Typography variant="h1" sx={{ background: 'linear-gradient(90deg, #FFCD05 50%, #1E499F 50%)', WebkitBackgroundClip: 'text', color: 'transparent', fontFamily: 'math', fontSize: { xs: '3rem', sm: '4rem', md: '5rem' }, fontWeight: 'bold', marginBottom: '20px' }}>
+      PaperPows
+    </Typography>
+    <Typography variant="h5" sx={{ fontSize: '1.5rem', maxWidth: '600px', marginBottom: '30px' }}>
+      בלי ניירת, בלי קלסרים – כל המסמכים שלך מאובטחים וזמינים בלחיצת כפתור.
+    </Typography>
+    <Box component="img" sx={{ width: '75%', height: 'auto', boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)', animation: `${floatUp} 3s infinite alternate ease-in-out`, margin: '30px 0' }} src={Image} alt="מסמכים דיגיטליים" />
+    <Box sx={{ display: 'flex', gap: '20px' }}>
+      <UserAccess isLogin={1} />
+      <UserAccess isLogin={0} />
+    </Box>
+  </Container>
+);
 
-  return (
-    <div className="home-container">
-      <h1 ref={titleRef} className="main-title">
-        המסמכים שלך, מסודרים ונגישים תמיד – <span className="highlight">PaperPows</span>
-      </h1>
-      <p className="sub-title">
-        בלי ניירת, בלי קלסרים – כל המסמכים שלך מאובטחים וזמינים בלחיצת כפתור.
-      </p>
-
-        <UserAccess isLogin={1} />
-
-      <div className="image-container">
-        <img style={{ width: '75%' }} src={Image} alt="מסמכים דיגיטליים" className="animated-image" />
-      </div>
-
-      <div className="buttons-container ">
-        <div className="animated-image">
-        <UserAccess isLogin={1} /> 
-        </div>
-        <div className="animated-image">
-        <UserAccess isLogin={0} /> 
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default Home;
+export default HomePage;
