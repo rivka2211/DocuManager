@@ -3,13 +3,14 @@ import { Typography, Box } from "@mui/material";
 import OneFile from "../components/OneFile";
 import { userStore } from "../hooks/store/UserStore";
 import FileAccess from "../components/FileAccess";
+import { fileStore } from "../hooks/store/FileStore";
 
   
 const MainScreen = () => {
   const { categoryName } = useParams<{ categoryName: string }>();
   const categories = userStore.user?.categories;
   const currentCategory = categories?.find((category) => category.name === categoryName);
-  const files = currentCategory?.files ?? [];
+  const files = fileStore.files;
 
   return (
     <Box sx={{ p: 4 }}>

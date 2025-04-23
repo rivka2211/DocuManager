@@ -4,7 +4,7 @@ import { UserDTO } from "../types";
 
 const MYAPI = "http://localhost:5299";
 
-const apiClient = axios.create({
+export const apiClient = axios.create({
   baseURL: MYAPI,
 });
 
