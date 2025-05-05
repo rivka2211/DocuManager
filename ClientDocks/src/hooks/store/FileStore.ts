@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import {categoryStore} from "./CategoryStore";
-import { FileDTO } from "../types";
+import { FileCreateDTO, FileDTO } from "../types";
 import { apiClient } from "./UserStore";
 
 
@@ -68,9 +68,9 @@ class FileStore {
   }
 
   // הוספת קובץ חדש
-  async addFile(file: { name: string; categoryId: number }) {
+  async addFile(file:FileCreateDTO) {
     try {
-      const response = await apiClient.post(`File`, file);
+      const response = await apiClient.post(`/api/File`, file);
       this.files.push(response.data);
     } catch (error) {
       console.error("Failed to add file:", error);
@@ -80,7 +80,7 @@ class FileStore {
   // עדכון קובץ קיים
   async updateFile(fileId: number, fileUpdate: { name: string; categoryId: number }) {
     try {
-      const response = await apiClient.put(`File/${fileId}`, fileUpdate);
+      const response = await apiClient.put(`/api/File/${fileId}`, fileUpdate);
       const index = this.files.findIndex((file) => file.id === fileId);
       if (index !== -1) {
         this.files[index] = response.data;

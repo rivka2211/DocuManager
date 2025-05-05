@@ -13,7 +13,8 @@ const MainScreen = () => {
   const files = fileStore.files;
 
   return (
-    <Box sx={{ p: 4 }}>
+    <Box sx={{ p: 4 }} onClick={() => {console.log(currentCategory);
+    }}>
       <FileAccess actionType={currentCategory?.id||1} />
       <Typography variant="h4">קטגוריה: {categoryName}</Typography>
       <ul>

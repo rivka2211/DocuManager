@@ -3,6 +3,8 @@ import { useState } from "react";
 import MyTextField from "./MyTextField";
 import { observer } from "mobx-react";
 import { userStore } from "../hooks/store/UserStore";
+import { categoryStore } from "../hooks/store/CategoryStore";
+import { fileStore } from "../hooks/store/FileStore";
 
 
 const FileAccess = observer(({ actionType }: { actionType: number }) => {
@@ -32,12 +34,14 @@ const FileAccess = observer(({ actionType }: { actionType: number }) => {
     function handleSubmit(): void {
         console.log("formData", formData);
         let currentCategory = actionType;
+        let ownerId = userStore.user?.id||0;
         if (actionType < 2) {
             const categories = userStore.user?.categories;
             currentCategory = categories?.find((category) => category.name === formData.category)?.id||0;
+            
         }
         console.log("currentCategory", currentCategory);
-        
+        fileStore.addFile({fileName:formData.name,fileUrl:formData.URL,ownerId,categoryId:currentCategory,isDeleted:false});
         setOpen(false);
     }
 
@@ -67,11 +71,11 @@ const FileAccess = observer(({ actionType }: { actionType: number }) => {
                     {AllText.btn[actionType === 0 ? 0 : 1]}
                 </Typography>
 
-                <MyTextField label="שם משתמש" name="name" type="text"
+                <MyTextField label="שם הקובץ" name="name" type="text"
                     value={formData.name} onChange={handleChange} />
                 <MyTextField label="ניתוב לקובץ" name="URL" type="URL"
                     value={formData.URL} onChange={handleChange} />
-                {actionType > 0 && (
+                {actionType >1 && (
                     <MyTextField label="קטגוריה" name="category" type="text"
                         value={formData.category} onChange={handleChange} />
                 )}
